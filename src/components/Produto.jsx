@@ -48,9 +48,9 @@ const Produto = ({id, nome, descricao, tamanho, cor, valor, estoque, id_categori
     return (
         <div>
             <div>
-                <Image src={produto_imagem[0]} alt={nome} className="rounded-lg h-[350px] object-cover"/>
+                <Image src={produto_imagem[0].imagem} alt={nome} className="rounded-lg h-[350px] object-cover"/>
                 <h3 className="h-[48px] text-center uppercase mt-3 line-clamp-2">{nome}</h3>
-                <h3 className="text-center text-2xl mt-3">R${valor.toFixed(2)}</h3>
+                <h3 className="text-center text-2xl mt-3">R${Number(valor).toFixed(2)}</h3>
             </div>
 
             <div className="w-full bg-black/10 mb-2 mt-4">

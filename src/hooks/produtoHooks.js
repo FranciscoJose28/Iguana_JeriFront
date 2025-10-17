@@ -7,6 +7,7 @@ export const useBuscarProdutos = () => {
         queryKey: ["Produtos"],
         queryFn: async () => {
             const resposta = await API.get("/produtos")
+            console.log("Resposta da API:", resposta)
             return resposta.data
         }
     })
