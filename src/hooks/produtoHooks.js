@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query"
 
 export const useBuscarProdutos = () => {
     return useQuery({
-        queryKey: ["Produtos"],
+        queryKey: ["produtos"],
         queryFn: async () => {
             const resposta = await API.get("/produtos")
-            console.log("Resposta da API:", resposta)
             return resposta.data
         }
     })

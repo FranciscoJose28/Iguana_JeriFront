@@ -1,0 +1,22 @@
+{
+    "produtos": [
+        {
+            "id": 1,
+            "nome": "produto 1",
+            "descricao": "descricao",
+            "tamanho": "m",
+            "cor": "branco",
+            "valor": "10",
+            "estoque": 1,
+            "id_categoria": 1,
+            "desconto": 1,
+            "produto_imagem": [
+                {
+                    "id": 1,
+                    "imagem": "https://ciamaritima.vtexassets.com/arquivos/ids/252651/2024-11-19-Cia_Maritima_SAINTTROPEZ_16724_16728_282_2576.jpg?v=638929400922500000",
+                    "id_produto": 1
+                }
+            ]
+        }
+    ]
+}

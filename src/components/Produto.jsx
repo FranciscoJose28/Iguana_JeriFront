@@ -6,26 +6,26 @@ import { BiMinus, BiPlus, BiShoppingBag } from "react-icons/bi";
 import { CarrinhoContext } from '../contexts/CarrinhoContext';
 
 
-const Produto = ({id, nome, descricao, tamanho, cor, valor, estoque, id_categoria, desconto, categoria, produto_imagem}) => {
+const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categoria, desconto, categoria, produto_imagem }) => {
     const [quantidade, setQuantidade] = useState(1)
     const [manequim, setManequim] = useState("")
-    const {carrinho, setCarrinho} = useContext(CarrinhoContext)
+    const { carrinho, setCarrinho } = useContext(CarrinhoContext)
 
-    function incrementar (){
+    function incrementar() {
         if (quantidade < estoque) {
-            setQuantidade(quantidade + 1)        
-        } else{
+            setQuantidade(quantidade + 1)
+        } else {
             toast("teste")
         }
     }
 
-    function decrementar (){
+    function decrementar() {
         if (quantidade > 1) {
-            setQuantidade(quantidade - 1)        
+            setQuantidade(quantidade - 1)
         }
     }
 
-    function escolherTamanho (select){
+    function escolherTamanho(select) {
         setManequim(select.target.value)
     }
 
@@ -39,7 +39,7 @@ const Produto = ({id, nome, descricao, tamanho, cor, valor, estoque, id_categori
                 produto_imagem
             }
             setCarrinho([...carrinho, produto])
-            
+
         } else {
             toast("Selecione um tamanho!")
         }
@@ -48,7 +48,16 @@ const Produto = ({id, nome, descricao, tamanho, cor, valor, estoque, id_categori
     return (
         <div>
             <div>
-                <Image src={produto_imagem[0].imagem} alt={nome} className="rounded-lg h-[350px] object-cover"/>
+                <div className="relative w-full h-[350px]">
+                    <Image
+                        src={produto_imagem[0].imagem}
+                        alt={nome}
+                        fill
+                        priority={false}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                        className="rounded-lg object-cover"
+                    />
+                </div>
                 <h3 className="h-[48px] text-center uppercase mt-3 line-clamp-2">{nome}</h3>
                 <h3 className="text-center text-2xl mt-3">R${Number(valor).toFixed(2)}</h3>
             </div>
@@ -68,17 +77,17 @@ const Produto = ({id, nome, descricao, tamanho, cor, valor, estoque, id_categori
                 <div className="flex w-[100px] bg-black/10 items-center">
                     <span className="flex-1 text-center">{quantidade}</span>
                     <div>
-                        <BiPlus className="cursor-pointer" onClick={incrementar}/>
-                        <BiMinus className="cursor-pointer" onClick={decrementar}/>
+                        <BiPlus className="cursor-pointer" onClick={incrementar} />
+                        <BiMinus className="cursor-pointer" onClick={decrementar} />
                     </div>
                 </div>
                 <button className="selection:bg-transparent flex-1 bg-black text-white py-2 rounded gap-2 flex items-center justify-center hover:bg-verde duration-200 cursor-pointer" onClick={adicionarCarrinho}>
-                   <BiShoppingBag/> Comprar
+                    <BiShoppingBag /> Comprar
                 </button>
             </div>
         </div>
 
     );
 }
- 
+
 export default Produto;
