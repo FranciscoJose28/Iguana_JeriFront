@@ -13,8 +13,7 @@ const SiteLayout = ({ children }) => {
             <QueryClientProvider client={queryClient}>
                 <CarrinhoProvider>
                     <Header />
-                    {children}
-                    <Produtos/>
+                    <main>{children}</main>
                     <Footer />
                 </CarrinhoProvider>
             </QueryClientProvider>
