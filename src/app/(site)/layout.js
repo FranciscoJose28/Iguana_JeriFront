@@ -2,6 +2,7 @@
 import CarrinhoProvider from "../../contexts/CarrinhoContext";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
+import Produtos from "./produtos/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ const SiteLayout = ({ children }) => {
                 <CarrinhoProvider>
                     <Header />
                     {children}
+                    <Produtos/>
                     <Footer />
                 </CarrinhoProvider>
             </QueryClientProvider>
