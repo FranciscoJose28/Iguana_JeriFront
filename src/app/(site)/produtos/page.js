@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image";
-const Produtos = () => {
+const ProdutoDetalhe = () => {
     return (
         <div>
             <div></div>
@@ -15,4 +15,4 @@ const Produtos = () => {
     );
 }
  
-export default Produtos;
+export default ProdutoDetalhe;

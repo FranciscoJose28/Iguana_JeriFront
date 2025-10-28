@@ -35,8 +35,8 @@ const Carrinho = () => {
                     <div className="p-4">
                         {
                             carrinho.map(produto => (
-                                <div className="flex">
-                                    <Image src={produto.produto_imagem} alt={produto.nome}/>
+                                <div className="flex" key={produto.id}>
+                                    <Image width={80} height={80} src={produto.produto_imagem[0].imagem} alt={produto.nome}/>
                                     <div>
                                         {produto.nome}
                                         <h6>R$ {produto.valor.toFixed(2)}</h6>

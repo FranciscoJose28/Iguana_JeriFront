@@ -29,7 +29,6 @@ const Produtos = () => {
           <Produto key={produto.id} {...produto} />
         ))}
       </div>
-      ;
     </>
   );
 };
