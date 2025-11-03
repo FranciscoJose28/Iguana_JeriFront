@@ -2,52 +2,53 @@
 import { queryClient } from "@/contexts/QueryClient"
 import { API } from "@/services"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { use } from "react"
 
-export const useBuscarProdutos = () => {
+export const useBuscarCategorias = () => {
     return useQuery({
-        queryKey: ["produtos"],
+        queryKey: ["categorias"],
         queryFn: async () => {
-            const resposta = await API.get("/produtos")
+            const resposta = await API.get("/categorias")
             return resposta.data
         }
     })
 }
 
-export const useCriarProduto = () => {
+export const useCriarCategoria = () => {
     return useMutation({
         mutationFn: async (dados) => {
-            const resposta = await API.post("/produtos", dados)
+            const resposta = await API.post("/categorias", dados)
             return resposta.data
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey:["produtos"]
+                queryKey:["categorias"]
             })
         }
     })
 }
-export const useEditarProduto = () => {
+export const useEditarCategoria = () => {
     return useMutation({
         mutationFn: async (dados) => {
-            const resposta = await API.put(`/produtos/${dados.id}`, dados)
+            const resposta = await API.put(`/categorias/${dados.id}`, dados)
             return resposta.data
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey:["produtos"]
+                queryKey:["categorias"]
             })
         }
     })
 }
-export const useDeletarProduto = () => {
+export const useDeletarCategoria = () => {
     return useMutation({
         mutationFn: async (id) => {
-            const resposta = await API.delete(`/produtos/${id}`)
+            const resposta = await API.delete(`/categorias/${id}`)
             return resposta.data
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey:["produtos"]
+                queryKey:["categorias"]
             })
         }
     })

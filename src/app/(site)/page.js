@@ -1,8 +1,8 @@
-import Produtos from "../../components/Produtos";
-import Banner from "../../components/Banner";
-import Newsletter from "../../components/Newsletter";
+import Produtos from "@/components/Produtos";
+import Banner from "@/components/Banner";
+import Newsletter from "@/components/Newsletter";
 import { ToastContainer } from 'react-toastify';
-import Instagram from "../../components/Instagram";
+import Instagram from "@/components/Instagram";
 
 const Inicio = () => {
     return (

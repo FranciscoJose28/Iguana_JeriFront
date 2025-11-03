@@ -1,7 +1,7 @@
 "use client"
-import CarrinhoProvider from "../../contexts/CarrinhoContext";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
+import CarrinhoProvider from "@/contexts/CarrinhoContext";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 
 const SiteLayout = ({ children }) => {
     

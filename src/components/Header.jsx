@@ -1,12 +1,11 @@
 "use client"
 import { BiSearch, BiShoppingBag } from "react-icons/bi";
 import { AiOutlineUser } from "react-icons/ai";
-import Logo from "../assets/Logo.png";
-import LogoMenor from "../assets/LogoMenor.png"
+import LogoMenor from "@/assets/LogoMenor.png"
 import Image from 'next/image'
 import { useContext, useState } from "react";
 import Carrinho from "./Carrinho";
-import { CarrinhoContext } from "../contexts/CarrinhoContext";
+import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 
 const Header = () => {
     const [mostrarGaveta, setMostrarGaveta] = useState(false)

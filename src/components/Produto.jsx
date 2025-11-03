@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import Image from "next/image";
 import { useContext, useState } from "react";
 import { BiMinus, BiPlus, BiShoppingBag } from "react-icons/bi";
-import { CarrinhoContext } from '../contexts/CarrinhoContext';
+import { CarrinhoContext } from '@/contexts/CarrinhoContext';
 
 
 const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categoria, desconto, categoria, produto_imagem }) => {
@@ -49,14 +49,16 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
         <div>
             <div>
                 <div className="relative w-full h-[350px]">
-                    <Image
-                        src={produto_imagem[0].imagem}
-                        alt={nome}
-                        fill
-                        priority={false}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
-                        className="rounded-lg -z-10w object-cover"
-                    />
+                    <a href="/produtos">
+                        <Image
+                            src={produto_imagem[0].imagem}
+                            alt={nome}
+                            fill
+                            priority={false}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                            className="rounded-lg -z-10w object-cover"
+                        />
+                    </a>
                 </div>
                 <h3 className="h-[48px] text-center uppercase mt-3 line-clamp-2">{nome}</h3>
                 <h3 className="text-center text-2xl mt-3">R${valor.toFixed(2)}</h3>

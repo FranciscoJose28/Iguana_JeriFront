@@ -1,117 +1,217 @@
-"use client"
-import { useState } from "react";
-import { useBuscarProdutos } from "../../../../hooks/produtoHooks";
-import { Button, Drawer, Form, Input, Table } from "antd";
+"use client";
+import { useContext, useState } from "react";
+import {
+  useBuscarProdutos,
+  useCriarProduto,
+  useDeletarProduto,
+  useEditarProduto,
+} from "@/hooks/produtoHooks";
+import { Button, Drawer, Form, Input, Popconfirm, Select, Table } from "antd";
+import { BiPencil, BiTrash } from "react-icons/bi";
+import { AntContext } from "@/contexts/AntContext";
+import { useBuscarCategorias } from "@/hooks/categoriaHooks";
 
 const AdminProduto = () => {
-    const {data:produtos} = useBuscarProdutos()
-    const [drawerCriar,setDrawerCriar] = useState(false)
-    return (
-        <>
-            <div className="flex items-center justify-between">
-                <h2>Produtos</h2>
-                <Button type="primary" onClick={() => setDrawerCriar(true)}>Novo produto</Button>
+  const { data: produtos } = useBuscarProdutos();
+  const { data: categorias, isFetched: categoriasListadas } = useBuscarCategorias();
+  const [drawerCriar, setDrawerCriar] = useState(false);
+  const [drawerEditar, setDrawerEditar] = useState(false);
+  const { mutateAsync: criarProduto } = useCriarProduto();
+  const { mutateAsync: editarProduto } = useEditarProduto();
+  const { mutateAsync: deletarProduto } = useDeletarProduto();
+  const { api } = useContext(AntContext);
+  const [formEditar] = Form.useForm();
+
+  function criar(dados) {
+    criarProduto(dados, {
+      onSuccess: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+      onError: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+    });
+  }
+
+  function editar(dados) {
+    editarProduto(dados, {
+      onSuccess: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerEditar(false);
+      },
+      onError: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerEditar(false);
+      },
+    });
+  }
+  function deletar(id) {
+    deletarProduto(id, {
+      onSuccess: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+      onError: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+    });
+  }
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <h2>Produtos</h2>
+        <Button type="primary" onClick={() => setDrawerCriar(true)}>
+          Novo produto
+        </Button>
+      </div>
+      <Table dataSource={produtos || []} rowKey={"id"}>
+        <Table.Column dataIndex={"id"} title={"id"} key={"id"} />
+        <Table.Column dataIndex={"nome"} title={"nome"} key={"nome"} />
+        <Table.Column dataIndex={"valor"} title={"valor"} key={"valor"} />
+        <Table.Column dataIndex={"estoque"} title={"estoque"} key={"estoque"} />
+        <Table.Column
+          className="w-[100px]"
+          title="ações"
+          render={(_, produto) => (
+            <div className="flex gap-3">
+              <Button
+                icon={<BiPencil />}
+                onClick={() => {
+                  formEditar.setFieldsValue({
+                    id: produto.id,
+                    nome: produto.nome,
+                    descricao: produto.descricao,
+                  });
+                  setDrawerEditar(true);
+                }}
+              />
+              <Popconfirm
+                title="Aviso"
+                description="Deseja apagar esse registro?"
+                onConfirm={() => deletar(produto.id)}
+                okText="Sim"
+                cancelText="Não"
+              >
+                <Button icon={<BiTrash />} />
+              </Popconfirm>
             </div>
-            <Table
-                dataSource={produtos || []}
-                rowKey={"id"}
-            >
-                <Table.Column
-                    dataIndex={"id"}
-                    title={"id"}
-                    key={"id"}
-                />
-                <Table.Column
-                    dataIndex={"nome"}
-                    title={"nome"}
-                    key={"nome"}
-                />
-                <Table.Column
-                    dataIndex={"valor"}
-                    title={"valor"}
-                    key={"valor"}
-                />
-                <Table.Column
-                    dataIndex={"estoque"}
-                    title={"estoque"}
-                    key={"estoque"}
-                />
-            </Table>
-            <Drawer
-                open={drawerCriar}
-                onClose={() => setDrawerCriar(false)}
-            >
-                <Form
-                    layout="vertical"
-                >
-                    <Form.Item 
-                        label={"Nome"}
-                        name={"nome"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          )}
+        />
+      </Table>
+      <Drawer open={drawerCriar} onClose={() => setDrawerCriar(false)}>
+        <Form layout="vertical" defaultValue={{tamanho: "PP"}}>
+          <Form.Item
+            label={"Nome"}
+            name={"nome"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Descrição"}
-                        name={"descricao"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input.TextArea/>
-                    </Form.Item>
+          <Form.Item
+            label={"Descrição"}
+            name={"descricao"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Tamanho"}
-                        name={"tamanho"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item
+            label={"Tamanho"}
+            name={"tamanho"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Select
+              options={[
+                {
+                  value: "PP",
+                  label: "PP",
+                },
+                {
+                  value: "P",
+                  label: "P",
+                },
+                {
+                  value: "M",
+                  label: "M",
+                },
+                {
+                  value: "G",
+                  label: "G",
+                },
+                {
+                  value: "GG",
+                  label: "GG",
+                },
+              ]}
+            />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Cor"}
-                        name={"cor"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item
+            label={"Cor"}
+            name={"cor"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Valor"}
-                        name={"valor"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item
+            label={"Valor"}
+            name={"valor"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Estoque"}
-                        name={"estoque"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item
+            label={"Estoque"}
+            name={"estoque"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Categoria"}
-                        name={"id_categoria"}
-                        rules={[{required:true, message:"Campo obrigatório"}]}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item
+            label={"Categoria"}
+            name={"id_categoria"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Select
+                options={categoriasListadas && categorias.map(categoria => {
+                    return{
+                        value: categoria.id,
+                        label: categoria.nome
+                    }
+                }) || []}
+            />
+          </Form.Item>
 
-                    <Form.Item 
-                        label={"Desconto"}
-                        name={"desconto"}
-                    >
-                        <Input/>
-                    </Form.Item>
+          <Form.Item label={"Desconto"} name={"desconto"}>
+            <Input />
+          </Form.Item>
 
-                    <Button type="primary" htmlType="submit">Criar</Button>
-                </Form>
-            </Drawer>
-        </>
-    );
-}
- 
+          <Button type="primary" htmlType="submit">
+            Criar
+          </Button>
+        </Form>
+      </Drawer>
+    </>
+  );
+};
+
 export default AdminProduto;

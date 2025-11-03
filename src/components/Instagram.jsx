@@ -1,7 +1,7 @@
 import Image from "next/image";
-import instagram1 from "../assets/instagram1.jpg"
-import instagram2 from "../assets/instagram2.jpg"
-import instagram3 from "../assets/instagram3.jpg"
+import instagram1 from "@/assets/instagram1.jpg"
+import instagram2 from "@/assets/instagram2.jpg"
+import instagram3 from "@/assets/instagram3.jpg"
 
 const Instagram = () => {
     return (

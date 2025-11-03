@@ -1,8 +1,9 @@
 import { BiX } from "react-icons/bi";
-import { CarrinhoContext } from "../contexts/CarrinhoContext";
+import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 import { useContext } from "react";
 import Image from "next/image";
 import { AiOutlineHeart } from "react-icons/ai";
+
 
 const Carrinho = () => {
     const {carrinho} = useContext(CarrinhoContext)
@@ -44,6 +45,9 @@ const Carrinho = () => {
                                 </div>
                             ))             
                         }
+                        <a href="/finalizar-compra">
+                            <button>Finalizar compra</button>
+                        </a>
                     </div>
                 )
             }
