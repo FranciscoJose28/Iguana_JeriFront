@@ -6,7 +6,7 @@ import {
   useDeletarProduto,
   useEditarProduto,
 } from "@/hooks/produtoHooks";
-import { Button, Drawer, Form, Input, Popconfirm, Select, Table } from "antd";
+import { Button, Drawer, Form, Input, InputNumber, Popconfirm, Select, Table } from "antd";
 import { BiPencil, BiTrash } from "react-icons/bi";
 import { AntContext } from "@/contexts/AntContext";
 import { useBuscarCategorias } from "@/hooks/categoriaHooks";
@@ -96,6 +96,12 @@ const AdminProduto = () => {
                     id: produto.id,
                     nome: produto.nome,
                     descricao: produto.descricao,
+                    tamanho: produto.tamanho,
+                    cor: produto.cor,
+                    valor: produto.valor,
+                    estoque: produto.estoque,
+                    id_categoria: produto.id_categoria,
+                    desconto: produto.desconto,
                   });
                   setDrawerEditar(true);
                 }}
@@ -114,7 +120,7 @@ const AdminProduto = () => {
         />
       </Table>
       <Drawer open={drawerCriar} onClose={() => setDrawerCriar(false)}>
-        <Form layout="vertical" defaultValue={{tamanho: "PP"}}>
+        <Form layout="vertical" defaultValue={{tamanho: "PP"}} onFinish={criar}>
           <Form.Item
             label={"Nome"}
             name={"nome"}
@@ -175,7 +181,7 @@ const AdminProduto = () => {
             name={"valor"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Input />
+            <InputNumber style={{ width: "100% !important" }}/>
           </Form.Item>
 
           <Form.Item
@@ -202,11 +208,115 @@ const AdminProduto = () => {
           </Form.Item>
 
           <Form.Item label={"Desconto"} name={"desconto"}>
-            <Input />
+            <InputNumber className="w-full!"/>
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
             Criar
+          </Button>
+        </Form>
+      </Drawer>
+
+      <Drawer open={drawerEditar} onClose={() => setDrawerEditar(false)}>
+        <Form layout="vertical" defaultValue={{tamanho: "PP"}} form={formEditar} onFinish={editar}>
+          <Form.Item 
+            hidden
+            name={"id"}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label={"Nome"}
+            name={"nome"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label={"Descrição"}
+            name={"descricao"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input.TextArea />
+          </Form.Item>
+
+          <Form.Item
+            label={"Tamanho"}
+            name={"tamanho"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Select
+              options={[
+                {
+                  value: "PP",
+                  label: "PP",
+                },
+                {
+                  value: "P",
+                  label: "P",
+                },
+                {
+                  value: "M",
+                  label: "M",
+                },
+                {
+                  value: "G",
+                  label: "G",
+                },
+                {
+                  value: "GG",
+                  label: "GG",
+                },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={"Cor"}
+            name={"cor"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label={"Valor"}
+            name={"valor"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <InputNumber className="w-full!"/>
+          </Form.Item>
+
+          <Form.Item
+            label={"Estoque"}
+            name={"estoque"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label={"Categoria"}
+            name={"id_categoria"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+          >
+            <Select
+                options={categoriasListadas && categorias.map(categoria => {
+                    return{
+                        value: categoria.id,
+                        label: categoria.nome
+                    }
+                }) || []}
+            />
+          </Form.Item>
+
+          <Form.Item label={"Desconto"} name={"desconto"}>
+            <InputNumber className="w-full!"/>
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit">
+            Editar
           </Button>
         </Form>
       </Drawer>
