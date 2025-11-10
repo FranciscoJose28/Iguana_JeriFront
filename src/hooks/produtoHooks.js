@@ -52,3 +52,21 @@ export const useDeletarProduto = () => {
         }
     })
 }
+
+export const useCriarImagem = () => {
+    return useMutation({
+        mutationFn: async (dados) => {
+            const resposta = await API.post("/produtos/imagem", dados, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            return resposta.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey:["produtos"]
+            })
+        }
+    })
+}

@@ -2,25 +2,39 @@
 import { useContext, useState } from "react";
 import {
   useBuscarProdutos,
+  useCriarImagem,
   useCriarProduto,
   useDeletarProduto,
   useEditarProduto,
 } from "@/hooks/produtoHooks";
-import { Button, Drawer, Form, Input, InputNumber, Popconfirm, Select, Table } from "antd";
-import { BiPencil, BiTrash } from "react-icons/bi";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  InputNumber,
+  Popconfirm,
+  Select,
+  Table,
+} from "antd";
+import { BiPencil, BiShow, BiTrash } from "react-icons/bi";
 import { AntContext } from "@/contexts/AntContext";
 import { useBuscarCategorias } from "@/hooks/categoriaHooks";
 
 const AdminProduto = () => {
   const { data: produtos } = useBuscarProdutos();
-  const { data: categorias, isFetched: categoriasListadas } = useBuscarCategorias();
+  const { data: categorias, isFetched: categoriasListadas } =
+    useBuscarCategorias();
   const [drawerCriar, setDrawerCriar] = useState(false);
   const [drawerEditar, setDrawerEditar] = useState(false);
+  const [drawerImagem, setDrawerImagem] = useState(false);
   const { mutateAsync: criarProduto } = useCriarProduto();
   const { mutateAsync: editarProduto } = useEditarProduto();
   const { mutateAsync: deletarProduto } = useDeletarProduto();
+  const { mutateAsync: criarImagem } = useCriarImagem();
   const { api } = useContext(AntContext);
   const [formEditar] = Form.useForm();
+  const [formImagem] = Form.useForm();
 
   function criar(dados) {
     criarProduto(dados, {
@@ -71,6 +85,24 @@ const AdminProduto = () => {
       },
     });
   }
+
+  function adicionarImagem(dados) {
+    criarImagem(dados, {
+      onSuccess: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+      onError: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+        setDrawerCriar(false);
+      },
+    });
+  }
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -89,6 +121,13 @@ const AdminProduto = () => {
           title="ações"
           render={(_, produto) => (
             <div className="flex gap-3">
+              <Button
+                icon={<BiShow />}
+                onClick={() => {
+                  formImagem.setFieldValue("id_produto", produto.id)
+                  setDrawerImagem(true)
+                } }
+              />
               <Button
                 icon={<BiPencil />}
                 onClick={() => {
@@ -120,7 +159,11 @@ const AdminProduto = () => {
         />
       </Table>
       <Drawer open={drawerCriar} onClose={() => setDrawerCriar(false)}>
-        <Form layout="vertical" defaultValue={{tamanho: "PP"}} onFinish={criar}>
+        <Form
+          layout="vertical"
+          defaultValue={{ tamanho: "PP" }}
+          onFinish={criar}
+        >
           <Form.Item
             label={"Nome"}
             name={"nome"}
@@ -181,7 +224,7 @@ const AdminProduto = () => {
             name={"valor"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber style={{ width: "100% !important" }}/>
+            <InputNumber style={{ width: "100% !important" }} />
           </Form.Item>
 
           <Form.Item
@@ -198,17 +241,21 @@ const AdminProduto = () => {
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Select
-                options={categoriasListadas && categorias.map(categoria => {
-                    return{
-                        value: categoria.id,
-                        label: categoria.nome
-                    }
-                }) || []}
+              options={
+                (categoriasListadas &&
+                  categorias.map((categoria) => {
+                    return {
+                      value: categoria.id,
+                      label: categoria.nome,
+                    };
+                  })) ||
+                []
+              }
             />
           </Form.Item>
 
           <Form.Item label={"Desconto"} name={"desconto"}>
-            <InputNumber className="w-full!"/>
+            <InputNumber className="w-full!" />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
@@ -218,11 +265,13 @@ const AdminProduto = () => {
       </Drawer>
 
       <Drawer open={drawerEditar} onClose={() => setDrawerEditar(false)}>
-        <Form layout="vertical" defaultValue={{tamanho: "PP"}} form={formEditar} onFinish={editar}>
-          <Form.Item 
-            hidden
-            name={"id"}
-          >
+        <Form
+          layout="vertical"
+          defaultValue={{ tamanho: "PP" }}
+          form={formEditar}
+          onFinish={editar}
+        >
+          <Form.Item hidden name={"id"}>
             <Input />
           </Form.Item>
           <Form.Item
@@ -285,7 +334,7 @@ const AdminProduto = () => {
             name={"valor"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber className="w-full!"/>
+            <InputNumber className="w-full!" />
           </Form.Item>
 
           <Form.Item
@@ -302,21 +351,57 @@ const AdminProduto = () => {
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Select
-                options={categoriasListadas && categorias.map(categoria => {
-                    return{
-                        value: categoria.id,
-                        label: categoria.nome
-                    }
-                }) || []}
+              options={
+                (categoriasListadas &&
+                  categorias.map((categoria) => {
+                    return {
+                      value: categoria.id,
+                      label: categoria.nome,
+                    };
+                  })) ||
+                []
+              }
             />
           </Form.Item>
 
           <Form.Item label={"Desconto"} name={"desconto"}>
-            <InputNumber className="w-full!"/>
+            <InputNumber className="w-full!" />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
             Editar
+          </Button>
+        </Form>
+      </Drawer>
+
+      <Drawer open={drawerImagem} onClose={() => setDrawerImagem(false)}>
+        <Form
+          layout="vertical"
+          defaultValue={{ tamanho: "PP" }}
+          form={formImagem}
+          encType="multipart/form-data"
+          onFinish={adicionarImagem}
+        >
+          <Form.Item hidden name={"id_produto"}>
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label={"Imagem"}
+            name={"imagem"}
+            rules={[{ required: true, message: "Campo obrigatório" }]}
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e?.target?.files?.[0];
+            }}
+          >
+            <Input type="file" />
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit">
+            Adicionar
           </Button>
         </Form>
       </Drawer>
