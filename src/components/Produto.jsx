@@ -15,7 +15,7 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
         if (quantidade < estoque) {
             setQuantidade(quantidade + 1)
         } else {
-            toast("teste")
+            toast("Este é todo o estoque disponível no momento")
         }
     }
 
@@ -36,7 +36,11 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
                 nome,
                 valor,
                 quantidade,
-                produto_imagem
+                produto_imagem,
+                tamanho,
+                cor,
+                estoque,
+                desconto
             }
             setCarrinho([...carrinho, produto])
 

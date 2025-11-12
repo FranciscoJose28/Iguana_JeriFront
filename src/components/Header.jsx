@@ -8,8 +8,8 @@ import Carrinho from "./Carrinho";
 import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 
 const Header = () => {
-    const [mostrarGaveta, setMostrarGaveta] = useState(false)
-    const {carrinho} = useContext(CarrinhoContext)
+    
+    const {carrinho, mostrarGaveta, setMostrarGaveta} = useContext(CarrinhoContext)
 
     function mostrarCarrinho() {
         setMostrarGaveta(true)
