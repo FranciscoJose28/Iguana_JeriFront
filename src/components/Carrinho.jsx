@@ -48,12 +48,12 @@ const Carrinho = () => {
           </div>
 
           <div>
-            <div className="flex justify-between items-center">
-              <h6>Subtotal</h6>
+            <div className="flex justify-between items-center mb-4">
+              <h6 className="text-gray-500 font-semibold">Subtotal</h6>
               R$ {carrinho.reduce((total, produto) => total + (produto.valor * produto.quantidade), 0).toFixed(2)}
             </div>
-            <div className="flex justify-between items-center">
-              <h6>Total</h6>
+            <div className="flex justify-between items-center mb-4">
+              <h6 className="text-gray-500 font-semibold">Total</h6>
               R$ {carrinho.reduce((total, produto) => total + ((produto.valor - produto.desconto) * produto.quantidade), 0).toFixed(2)}
             </div>
           </div>

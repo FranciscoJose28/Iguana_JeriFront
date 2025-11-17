@@ -1,21 +1,28 @@
-"use client"
+"use client";
+
 import Menu from "@/components/Menu";
 import AntProvider, { AntContext } from "@/contexts/AntContext";
 import { API } from "@/services";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
-const AdminLayout = ({children}) => {
-    API.defaults.headers.common['Authorization'] = `Bearer ${sessionStorage.getItem("token")}`;
-    const { collapsed } = useContext(AntContext);
+const AdminLayout = ({ children }) => {
+  const { collapsed } = useContext(AntContext);
 
-    return (
-        // <AntProvider>
-            <div className="h-screen flex">
-                <Menu/>
-                <div className={`flex-1 p-15 ${collapsed ? "pl-[140px]" : "pl-[280px]"}`}>{children}</div>
-            </div>
-        // </AntProvider>
-    );
-}
- 
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+  }, []);
+
+  return (
+    <div className="h-screen flex">
+      <Menu />
+      <div className={`flex-1 p-15 ${collapsed ? "pl-[140px]" : "pl-[280px]"}`}>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 export default AdminLayout;
