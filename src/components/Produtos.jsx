@@ -10,7 +10,7 @@ const Produtos = () => {
   return (
     <>
       <h2 className="text-center text-2xl font-semibold mt-10">Novidades!</h2>
-      <div className="grid grid-cols-4 gap-4 px-15 py-10">
+      <div className="grid grid-cols-4 gap-8 px-30 py-10">
         {isFetched && Lista.map((produto) => (
           <Produto key={produto.id} {...produto} />
         ))}

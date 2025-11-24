@@ -1,8 +1,23 @@
 "use client"
 import Image from "next/image";
 import produto1 from "@/assets/produto1.jpg"
+import { use, useEffect, useState } from "react";
+import { useBuscarProduto } from "@/hooks/produtoHooks";
 
-const ProdutoDetalhe = () => {
+const ProdutoDetalhe = ({params}) => {
+    const {id} = use(params)
+    const {mutateAsync: buscarProduto} = useBuscarProduto()
+    const [produto, setProduto] = useState(null)
+    console.log(produto);
+
+    useEffect(() => {
+        buscarProduto(id, {
+            onSuccess: (resposta) => {
+                setProduto(resposta)
+            }
+        })
+    },[])
+    
     return (
         <div className="flex justify-between py-35 px-60">
             <div>
@@ -11,9 +26,10 @@ const ProdutoDetalhe = () => {
 
             <div className="flex flex-col gap-6">
                 <div>
-                    <h2 className="text-xl font-semibold">Descrição do produto</h2>
+                    <h2 className="text-xl font-semibold">Descrição</h2>
+                    <p>{produto?.descricao}</p>
                     <div className="flex items-center gap-2">
-                        <p className="text-black mt-2">Preço</p>
+                        <p className="text-black mt-2">Preço: {produto?.valor}</p>
                         <p className="text-sm text-gray-500">Parcelas</p>
                     </div>
                 </div>

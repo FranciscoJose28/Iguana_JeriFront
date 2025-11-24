@@ -13,14 +13,12 @@ import c11 from "@/assets/icon-visa.webp"
 
 const Footer = () => {
     return (
-        <footer className=" bg-black text-white p-15">
-            <div className="grid grid-cols-4 gap-10">
+        <footer className=" bg-black text-white p-30">
+            <div className="grid grid-cols-3 gap-10">
                 <div>
                     <h3 className="text-sm font-bold tracking-widest mb-4">CONTA</h3>
                     <ul className="space-y-3 text-gray-300 text-sm">
-                        <li><a href="" className="hover:font-bold">Login</a></li>
-                        <li><a href="" className="hover:text-white">Minha Conta</a></li>
-                        <li><a href="" className="hover:text-white">Meus pedidos</a></li>
+                        <li><a href="/login" className="hover:font-bold">Área do cliente</a></li>
                         <li><a href="" className="hover:text-white">Wishlist</a></li>
                     </ul>
                 </div>
@@ -36,13 +34,13 @@ const Footer = () => {
                     </ul>
                 </div>
 
-                <div>
+                {/* <div>
                     <h3 className="text-sm font-bold tracking-widest mb-4">MINHA CONTA</h3>
                     <ul className="space-y-3 text-gray-300 text-sm">
                         <li><a href="" className="hover:text-white">Meu perfil</a></li>
                         <li><a href="" className="hover:text-white">Meus pedidos</a></li>
                     </ul>
-                </div>
+                </div> */}
 
                 <div>
                     <h3 className="text-sm font-bold tracking-widest mb-4">Formas de Pagamento</h3>

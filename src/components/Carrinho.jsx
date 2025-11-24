@@ -8,8 +8,6 @@ import ItemCarrinho from "@/components/ItemCarrinho";
 
 const Carrinho = () => {
   const { carrinho, setMostrarGaveta } = useContext(CarrinhoContext);
-  console.log(carrinho);
-  
 
   return (
     <div className="w-full h-full flex flex-col">

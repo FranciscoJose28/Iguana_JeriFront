@@ -46,7 +46,9 @@ const ItemCarrinho = ({
   }, [qtd]);
   return (
     <div className="flex mb-4 gap-3">
-      <Image width={70} height={70} src={produto_imagem[0].imagem} alt={nome} />
+      <div>
+        <img width={70} src={produto_imagem[0].imagem} alt={nome} /> 
+      </div>
       <div className="flex-1">
         <div className="flex justify-between">
           <strong className="font-medium text-sm line-clamp-1">{nome}</strong>
@@ -55,8 +57,8 @@ const ItemCarrinho = ({
             onClick={remover}
           />
         </div>
-        <h6 className="text-sm">R$ {valor.toFixed(2)}</h6>
-        <div className="text-xs font-extralight">Cor: {cor}</div>
+        <h6 className="text-sm mb-1">R$ {valor.toFixed(2)}</h6>
+        <div className="text-xs font-extralight mb-1">Cor: {cor}</div>
         <div className="text-xs font-extralight">Tamanho: {tamanho}</div>
         <div className="flex justify-end">
           <div className="flex border border-black/20 rounded py-1 px-2 items-center text-sm justify-center gap-3">

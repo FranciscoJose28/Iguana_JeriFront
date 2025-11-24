@@ -13,6 +13,15 @@ export const useBuscarProdutos = () => {
     })
 }
 
+export const useBuscarProduto = () => {
+    return useMutation({
+        mutationFn: async (id) => {
+            const resposta = await API.get(`/produtos/${id}`)
+            return resposta.data
+        }
+    })
+}
+
 export const useCriarProduto = () => {
     return useMutation({
         mutationFn: async (dados) => {
@@ -26,6 +35,7 @@ export const useCriarProduto = () => {
         }
     })
 }
+
 export const useEditarProduto = () => {
     return useMutation({
         mutationFn: async (dados) => {
@@ -39,6 +49,7 @@ export const useEditarProduto = () => {
         }
     })
 }
+
 export const useDeletarProduto = () => {
     return useMutation({
         mutationFn: async (id) => {
@@ -67,6 +78,15 @@ export const useCriarImagem = () => {
             queryClient.invalidateQueries({
                 queryKey:["produtos"]
             })
+        }
+    })
+}
+
+export const usePesquisarProduto = () => {
+    return useMutation({
+        mutationFn: async (palavra) => {
+            const resposta = await API.post("/produtos/pesquisa", {palavra:palavra})
+            return resposta.data
         }
     })
 }

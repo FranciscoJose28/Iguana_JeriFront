@@ -5,7 +5,7 @@ import instagram3 from "@/assets/instagram3.jpg"
 
 const Instagram = () => {
     return (
-        <div className="p-15">
+        <div className="p-30">
             <h1 className="text-[80px] text-center bg-gradient-to-b from-black/50 to-white bg-clip-text text-transparen font-thin mb-7">Instagram</h1>
             {/* <h1 className="text-3xl font-bold mb-15">Instagram</h1> */}
             <div className="grid grid-cols-4 gap-5 -mt-0">
