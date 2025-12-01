@@ -53,7 +53,7 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
         <div>
             <div>
                 <div className="relative w-full h-[350px]">
-                    <a href="/produtos">
+                    <a href={`/produtos/${id}`}>
                         <Image
                             src={produto_imagem[0].imagem}
                             alt={nome}

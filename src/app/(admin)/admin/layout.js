@@ -13,10 +13,15 @@ const AdminLayout = ({ children }) => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
+    const usuario = JSON.parse(sessionStorage.getItem("usuario")) || null
 
     if (!token) {
       router.push("/login");
       return;
+    }
+
+    if (usuario && usuario.niveis.nome != "admin") {
+      router.push("/meus-pedidos")
     }
 
     API.defaults.headers.common["Authorization"] = `Bearer ${token}`;

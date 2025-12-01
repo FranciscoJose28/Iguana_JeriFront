@@ -21,8 +21,16 @@ const Login = () => {
           });
           return;
         }
+
+        document.cookie = `token=${resposta.token}; path=/; max-age=86400`;
         sessionStorage.setItem("token", resposta.token);
-        navigate.push("/admin");
+        sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
+
+        if(resposta.usuario.niveis.nome == "admin"){
+          navigate.push("/admin");
+        } else{
+          navigate.push("/meus-pedidos");
+        }
       },
       onError: (resposta) => {
         api[resposta.tipo]({

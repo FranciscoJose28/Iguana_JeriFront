@@ -26,10 +26,10 @@ const ProdutoDetalhe = ({params}) => {
 
             <div className="flex flex-col gap-6">
                 <div>
-                    <h2 className="text-xl font-semibold">Descrição</h2>
+                    <h2 className="text-xl font-semibold">{produto?.nome}</h2>
                     <p>{produto?.descricao}</p>
                     <div className="flex items-center gap-2">
-                        <p className="text-black mt-2">Preço: {produto?.valor}</p>
+                        <p className="text-black mt-2">R$ {produto?.valor}</p>
                         <p className="text-sm text-gray-500">Parcelas</p>
                     </div>
                 </div>
