@@ -82,6 +82,20 @@ export const useCriarImagem = () => {
     })
 }
 
+export const useDeletarImagem = () => {
+    return useMutation({
+        mutationFn: async (id) => {
+            const resposta = await API.delete("/produtos/imagem/" + id)
+            return resposta.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey:["produtos"]
+            })
+        }
+    })
+}
+
 export const usePesquisarProduto = () => {
     return useMutation({
         mutationFn: async (palavra) => {

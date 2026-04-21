@@ -70,7 +70,7 @@ const Login = () => {
           Esqueceu sua senha?
         </a>
         <button
-          className="w-full h-[40px] bg-black text-white font-bold rounded mb-4"
+          className="w-full h-[40px] bg-black text-white font-bold rounded mb-4 cursor-pointer hover:bg-verde duration-200"
           onClick={login}
         >
           Entrar

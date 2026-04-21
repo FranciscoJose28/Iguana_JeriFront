@@ -15,7 +15,7 @@ const Instagram = () => {
                 <Image className="h-[350px] object-cover rounded" src={instagram3} alt="foto do instagram3"/>
             </div>
             <div className="flex justify-center mt-10">
-                <button className="bg-black text-white rounded px-15 py-2 text-2xl font-thin hover:bg-verde duration-200 cursor-pointer">Veja mais</button>
+                <a href="https://www.instagram.com/iguanajeri" target="_blank" className="bg-black text-white rounded px-15 py-2 text-2xl font-thin hover:bg-verde duration-200 cursor-pointer">Veja mais</a>
             </div>
         </div>
     );

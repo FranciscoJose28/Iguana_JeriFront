@@ -4,6 +4,7 @@ import {
   useBuscarProdutos,
   useCriarImagem,
   useCriarProduto,
+  useDeletarImagem,
   useDeletarProduto,
   useEditarProduto,
 } from "@/hooks/produtoHooks";
@@ -17,7 +18,14 @@ import {
   Select,
   Table,
 } from "antd";
-import { BiPencil, BiShow, BiTrash } from "react-icons/bi";
+import {
+  BiImageAdd,
+  BiPencil,
+  BiShow,
+  BiTrash,
+  BiUpload,
+  BiX,
+} from "react-icons/bi";
 import { AntContext } from "@/contexts/AntContext";
 import { useBuscarCategorias } from "@/hooks/categoriaHooks";
 
@@ -32,11 +40,14 @@ const AdminProduto = () => {
   const { mutateAsync: editarProduto } = useEditarProduto();
   const { mutateAsync: deletarProduto } = useDeletarProduto();
   const { mutateAsync: criarImagem } = useCriarImagem();
+  const { mutateAsync: deletarImagem } = useDeletarImagem();
   const { api } = useContext(AntContext);
   const [formEditar] = Form.useForm();
   const [formImagem] = Form.useForm();
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
   function criar(dados) {
+    dados.tamanho = dados.tamanho.toString();
     criarProduto(dados, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
@@ -54,6 +65,8 @@ const AdminProduto = () => {
   }
 
   function editar(dados) {
+    dados.tamanho = dados.tamanho.toString();
+    dados.cor = dados.cor.toString();
     editarProduto(dados, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
@@ -103,6 +116,21 @@ const AdminProduto = () => {
     });
   }
 
+  function removerImagem(id) {
+    deletarImagem(id, {
+      onSuccess: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+      },
+      onError: (resposta) => {
+        api[resposta.tipo]({
+          description: resposta.mensagem,
+        });
+      },
+    });
+  }
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -122,11 +150,12 @@ const AdminProduto = () => {
           render={(_, produto) => (
             <div className="flex gap-3">
               <Button
-                icon={<BiShow />}
+                icon={<BiImageAdd />}
                 onClick={() => {
-                  formImagem.setFieldValue("id_produto", produto.id)
-                  setDrawerImagem(true)
-                } }
+                  formImagem.setFieldValue("id_produto", produto.id);
+                  setDrawerImagem(true);
+                  setProdutoSelecionado(produto);
+                }}
               />
               <Button
                 icon={<BiPencil />}
@@ -135,8 +164,9 @@ const AdminProduto = () => {
                     id: produto.id,
                     nome: produto.nome,
                     descricao: produto.descricao,
-                    tamanho: produto.tamanho,
-                    cor: produto.cor,
+                    tamanho: produto.tamanho.split(","),
+                    peso: produto.peso,
+                    // cor: produto.cor,
                     valor: produto.valor,
                     estoque: produto.estoque,
                     id_categoria: produto.id_categoria,
@@ -186,6 +216,8 @@ const AdminProduto = () => {
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Select
+              mode="multiple"
+              allowClear
               options={[
                 {
                   value: "PP",
@@ -212,11 +244,44 @@ const AdminProduto = () => {
           </Form.Item>
 
           <Form.Item
-            label={"Cor"}
-            name={"cor"}
+            label={"Peso"}
+            name={"peso"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="Cores" required>
+            <Form.List name="cor">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <div key={field.key} className="flex gap-3">
+                      <Form.Item
+                        {...field}
+                        rules={[
+                          { required: true, message: "Selecione uma cor" },
+                        ]}
+                      >
+                        <Input
+                          type="color"
+                          className="w-9! h-9! p-0! border-0!"
+                        />
+                      </Form.Item>
+
+                      <Button
+                        onClick={() => remove(field.name)}
+                        icon={<BiTrash />}
+                      ></Button>
+                    </div>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()}>
+                    Adicionar cor
+                  </Button>
+                </>
+              )}
+            </Form.List>
           </Form.Item>
 
           <Form.Item
@@ -296,6 +361,7 @@ const AdminProduto = () => {
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Select
+              mode="multiple"
               options={[
                 {
                   value: "PP",
@@ -322,11 +388,44 @@ const AdminProduto = () => {
           </Form.Item>
 
           <Form.Item
-            label={"Cor"}
-            name={"cor"}
+            label={"Peso"}
+            name={"peso"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="Cores" required>
+            <Form.List name="cor">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <div key={field.key} className="flex gap-3">
+                      <Form.Item
+                        {...field}
+                        rules={[
+                          { required: true, message: "Selecione uma cor" },
+                        ]}
+                      >
+                        <Input
+                          type="color"
+                          className="w-9! h-9! p-0! border-0!"
+                        />
+                      </Form.Item>
+
+                      <Button
+                        onClick={() => remove(field.name)}
+                        icon={<BiTrash />}
+                      ></Button>
+                    </div>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()}>
+                    Adicionar cor
+                  </Button>
+                </>
+              )}
+            </Form.List>
           </Form.Item>
 
           <Form.Item
@@ -375,6 +474,31 @@ const AdminProduto = () => {
       </Drawer>
 
       <Drawer open={drawerImagem} onClose={() => setDrawerImagem(false)}>
+        <div className="grid grid-cols-2 gap-4">
+          {produtoSelecionado &&
+            produtoSelecionado.produto_imagem.map((img) => (
+              <div
+                key={img.id}
+                className="p-3 rounded border border-slate-300 mb-4 "
+              >
+                <div className="flex justify-end">
+                  <Popconfirm
+                    title="Aviso!"
+                    description="Deseja realmente apagar essa imagem?"
+                    okText="Sim"
+                    cancelText="Não"
+                    onConfirm={() => {
+                      removerImagem(img.id);
+                    }}
+                  >
+                    <BiX className="text-2xl cursor-pointer" />
+                  </Popconfirm>
+                </div>
+                <img src={img.imagem} alt="" className="w-full" />
+              </div>
+            ))}
+        </div>
+
         <Form
           layout="vertical"
           defaultValue={{ tamanho: "PP" }}

@@ -1,19 +1,33 @@
+"use client";
+
 import { BiMinus, BiPlus, BiX } from "react-icons/bi";
 import { CarrinhoContext } from "@/contexts/CarrinhoContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { AiOutlineHeart } from "react-icons/ai";
 import { toast } from "react-toastify";
 import ItemCarrinho from "@/components/ItemCarrinho";
 
 const Carrinho = () => {
-  const { carrinho, setMostrarGaveta } = useContext(CarrinhoContext);
+  const { carrinho, setCarrinho, setMostrarGaveta } = useContext(CarrinhoContext);
+  useEffect(() => {
+    const carrinhoSessao = sessionStorage.getItem("carrinho")
+      ? JSON.parse(sessionStorage.getItem("carrinho"))
+      : [];
+
+    if (carrinho.length == 0 && carrinhoSessao.length > 0) {
+      setCarrinho(carrinhoSessao);
+    }
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex items-center justify-between border-b border-black/20 px-2 py-6">
         <div className="flex items-center gap-2">
-          <BiX className="text-[28px] text-black/40 cursor-pointer" onClick={() => setMostrarGaveta(false)}/>
+          <BiX
+            className="text-[28px] text-black/40 cursor-pointer"
+            onClick={() => setMostrarGaveta(false)}
+          />
           <h2 className="text-lg font-light text-black/40">SUA SACOLA</h2>
         </div>
         <span className="flex gap-2 items-center text-sm text-black/40 underline hover:text-verde duration-200 cursor-pointer">
@@ -41,18 +55,33 @@ const Carrinho = () => {
         <div className="p-4 flex flex-col h-[calc(100vh_-_77px)]">
           <div className="flex-1 overflow-auto">
             {carrinho.map((produto) => (
-              <ItemCarrinho {...produto} key={produto.id}/>
+              <ItemCarrinho {...produto} key={produto.id} />
             ))}
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-4">
               <h6 className="text-gray-500 font-semibold">Subtotal</h6>
-              R$ {carrinho.reduce((total, produto) => total + (produto.valor * produto.quantidade), 0).toFixed(2)}
+              R${" "}
+              {carrinho
+                .reduce(
+                  (total, produto) =>
+                    total + produto.valor * produto.quantidade,
+                  0,
+                )
+                .toFixed(2)}
             </div>
             <div className="flex justify-between items-center mb-4">
               <h6 className="text-gray-500 font-semibold">Total</h6>
-              R$ {carrinho.reduce((total, produto) => total + ((produto.valor - produto.desconto) * produto.quantidade), 0).toFixed(2)}
+              R${" "}
+              {carrinho
+                .reduce(
+                  (total, produto) =>
+                    total +
+                    (produto.valor - produto.desconto) * produto.quantidade,
+                  0,
+                )
+                .toFixed(2)}
             </div>
           </div>
 
@@ -62,7 +91,10 @@ const Carrinho = () => {
             </button>
           </a>
 
-          <div className="flex gap-2 items-center justify-center text-medium font-semibold text-black/80 underline mt-5 cursor-pointer" onClick={() => setMostrarGaveta(false)}>
+          <div
+            className="flex gap-2 items-center justify-center text-medium font-semibold text-black/80 underline mt-5 cursor-pointer"
+            onClick={() => setMostrarGaveta(false)}
+          >
             Continuar Explorando
           </div>
         </div>

@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/contexts/QueryClient";
 import AntProvider from "@/contexts/AntContext";
+import CarrinhoProvider from "@/contexts/CarrinhoContext";
 
 
 const geistSans = Geist({
@@ -24,11 +25,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
       >
         <QueryProvider>
           <AntProvider>
-            {children}
+            <CarrinhoProvider>
+              {children}
+            </CarrinhoProvider>
           </AntProvider>
         </QueryProvider>
       </body>

@@ -1,12 +1,12 @@
 "use client"
 import { toast } from 'react-toastify';
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BiMinus, BiPlus, BiShoppingBag } from "react-icons/bi";
 import { CarrinhoContext } from '@/contexts/CarrinhoContext';
 
 
-const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categoria, desconto, categoria, produto_imagem }) => {
+const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_categoria, desconto, categoria, produto_imagem }) => {
     const [quantidade, setQuantidade] = useState(1)
     const [manequim, setManequim] = useState("")
     const { carrinho, setCarrinho } = useContext(CarrinhoContext)
@@ -37,7 +37,8 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
                 valor,
                 quantidade,
                 produto_imagem,
-                tamanho,
+                tamanho : manequim,
+                peso,
                 cor,
                 estoque,
                 desconto
@@ -49,11 +50,15 @@ const Produto = ({ id, nome, descricao, tamanho, cor, valor, estoque, id_categor
         }
     }
 
+    useEffect(() => {
+        sessionStorage.setItem("carrinho", JSON.stringify(carrinho))
+    }, [carrinho])
+
     return (
         <div>
             <div>
                 <div className="relative w-full h-[350px]">
-                    <a href={`/produtos/${id}`}>
+                    <a href={`/produto/${id}`}>
                         <Image
                             src={produto_imagem[0].imagem}
                             alt={nome}

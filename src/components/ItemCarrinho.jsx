@@ -38,7 +38,7 @@ const ItemCarrinho = ({
     setCarrinho([
       ...carrinho.map((produto) => {
         if (produto.id == id) {
-          return { ...produto, quantidade : qtd };
+          return { ...produto, quantidade: qtd };
         }
         return produto;
       }),
@@ -47,7 +47,7 @@ const ItemCarrinho = ({
   return (
     <div className="flex mb-4 gap-3">
       <div>
-        <img width={70} src={produto_imagem[0].imagem} alt={nome} /> 
+        <img width={70} src={produto_imagem[0].imagem} alt={nome} />
       </div>
       <div className="flex-1">
         <div className="flex justify-between">
