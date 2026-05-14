@@ -1,6 +1,7 @@
 "use client";
 
 import { AntContext } from "@/contexts/AntContext";
+import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 import { useLogin } from "@/hooks/clientesHooks";
 import { useRouter } from "next/navigation";
 import { useContext, useRef } from "react";
@@ -10,6 +11,7 @@ const Login = () => {
   const formRef = useRef(null);
   const { mutateAsync: fazerLogin } = useLogin();
   const navigate = useRouter();
+  const { urlProduto } = useContext(CarrinhoContext);
 
   function login() {
     event.preventDefault();
@@ -26,16 +28,22 @@ const Login = () => {
         sessionStorage.setItem("token", resposta.token);
         sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
 
-        if(resposta.usuario.niveis.nome == "admin"){
+        if(resposta.usuario.niveis && resposta.usuario.niveis.nome == "admin"){
           navigate.push("/admin");
         } else{
-          navigate.push("/meus-pedidos");
+          if (urlProduto) {
+            navigate.push(urlProduto);           
+          } else{
+            navigate.push("/meus-pedidos");
+          }
         }
       },
       onError: (resposta) => {
-        api[resposta.tipo]({
-          description: resposta.mensagem,
-        });
+        console.log(resposta.message);
+        
+        // api[resposta.tipo]({
+        //   description: resposta.mensagem,
+        // });
       },
     });
   }

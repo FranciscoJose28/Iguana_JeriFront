@@ -1,21 +1,33 @@
 "use client"
+
 import Image from "next/image";
 import produto1 from "@/assets/produto1.jpg"
 import { use, useContext, useEffect, useState } from "react";
-import { useBuscarProduto } from "@/hooks/produtoHooks";
+import { useBuscarProduto, useFavoritar } from "@/hooks/produtoHooks";
 import { toast, ToastContainer } from "react-toastify";
 import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 import { LuChevronRight } from "react-icons/lu";
-import { BiMinus, BiPlus } from "react-icons/bi";
+import { BiHeart, BiMinus, BiPlus, BiShare } from "react-icons/bi";
+import { Collapse } from "antd";
+import { AntContext } from "@/contexts/AntContext";
+import { usePathname } from "next/navigation";
+import { API } from "@/services";
 
 const ProdutoDetalhe = ({ params }) => {
-    const { id } = use(params)
-    const { mutateAsync: buscarProduto } = useBuscarProduto()
-    const [produto, setProduto] = useState(null)
-    const [manequim, setManequim] = useState("")
-    const { carrinho, setCarrinho } = useContext(CarrinhoContext)
-    const [qtd, setQtd] = useState(1)
+    const { api } = useContext(AntContext);
+    const { id } = use(params);
+    const { mutateAsync: buscarProduto } = useBuscarProduto();
+    const [produto, setProduto] = useState(null);
+    const [manequim, setManequim] = useState("");
+    const { carrinho, setCarrinho, setUrlProduto } = useContext(CarrinhoContext);
+    const [qtd, setQtd] = useState(1);
     const [imagemSelecionada, setImagemSelecionada] = useState(null);
+    const cores = produto?.cor?.split(",") || [];
+    const [corSelecionada, setCorSelecionada] = useState(null);
+    const { mutateAsync: favoritando } = useFavoritar()
+    const pathname = usePathname();
+    const [usuario, setUsuario] = useState(null);
+    const [token, setToken] = useState(null);
 
     function incrementar(estoque) {
         if (qtd < estoque) {
@@ -51,9 +63,32 @@ const ProdutoDetalhe = ({ params }) => {
         }
     }
 
+    function favoritar() {
+        if (!usuario) {
+            setUrlProduto(pathname)
+            window.location.href = "/login"
+        } else {
+            console.log("log", usuario);
+
+            favoritando({ id_cliente: JSON.parse(usuario).id, id_produto: produto.id, token }, {
+                onSuccess: (response) => {
+                    api.success({
+                        description: response.mensagem
+                    })
+                }
+            })
+
+        }
+    }
+
     console.log(produto);
 
     useEffect(() => {
+        const t = sessionStorage.getItem("token");
+        const u = sessionStorage.getItem("usuario");
+        setToken(t)
+        setUsuario(u)
+
         buscarProduto(id, {
             onSuccess: (resposta) => {
                 setProduto(resposta)
@@ -72,7 +107,7 @@ const ProdutoDetalhe = ({ params }) => {
                 <h6>{produto?.nome}</h6>
             </div>
 
-            <div className="flex justify-center py-5 gap-15">
+            <div className="flex justify-between items-start px-30 py-5 gap-15">
                 <div>
                     <img
                         className="rounded-xl object-cover w-[600px] h-[600px]"
@@ -94,23 +129,43 @@ const ProdutoDetalhe = ({ params }) => {
 
                 <div className="flex flex-col items-start gap-6 w-[550px]">
                     <div>
-                        <h2 className="text-xl font-semibold">{produto?.nome}</h2>
+                        <div className="flex items-start gap-5 ">
+                            <h2 className="text-xl font-semibold flex-1">{produto?.nome}</h2>
+                            <div className="flex items-center gap-4 *:text-2xl *:hover:text-verde *:duration-200 *:cursor-pointer">
+                                <BiShare className="rotate-y-180" />
+                                <BiHeart onClick={favoritar} />
+                            </div>
+                        </div>
                         <p className="text-gray-400 text-sm mb-2">Referência do produto</p>
-                        <p className="whitespace-pre-line leading-5">{produto?.descricao}</p>
-                        <div className="items-center gap-2">
-                            <p className="text-black mt-4 text-xl font-bold">R$ {produto?.valor.toFixed(2)}</p>
+                        <div className="items-center gap-2 mb-4">
+                            <p className="text-black mt-4 text-4xl font-semibold">R$ {produto?.valor.toFixed(2)}</p>
                             <p className="text-sm text-gray-500">Em até 2x de R$ {(produto?.valor / 2).toFixed(2)} sem juros</p>
                         </div>
+                        <Collapse expandIconPosition="end" ghost items={
+                            [
+                                {
+                                    key: '1',
+                                    label: <div className="text-2xl -ml-4">Descrição</div>,
+                                    children: <p className="whitespace-pre-line leading-5">{produto?.descricao}</p>,
+                                }
+                            ]
+                        } />
+
                     </div>
 
                     {
-                        produto?.cor.split(",").length > 1 && (
+                        cores.length > 0 && (
                             <div>
                                 <h3 className="font-semibold">Cores:</h3>
                                 <div className="flex gap-3 mt-2">
-                                    <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "P" && "border-verde"}`} onClick={() => setManequim("P")}>P</span>
-                                    <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "M" && "border-verde"}`} onClick={() => setManequim("M")}>M</span>
-                                    <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "G" && "border-verde"}`} onClick={() => setManequim("G")}>G</span>
+                                    {cores.map((cor, index) => (
+                                        <div
+                                            key={index}
+                                            style={{ backgroundColor: cor }}
+                                            onClick={() => setCorSelecionada(cor)}
+                                            className={`w-9 h-9 rounded-full cursor-pointer border-2 ${corSelecionada === cor ? "border-verde scale-110" : "border-gray-300"}`}
+                                        />
+                                    ))}
                                 </div>
                             </div>
                         )
@@ -119,14 +174,14 @@ const ProdutoDetalhe = ({ params }) => {
                     <div>
                         <h3 className="font-semibold">Tamanhos:</h3>
                         <div className="flex gap-3 mt-2">
-                            <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "P" && "border-verde"}`} onClick={() => setManequim("P")}>P</span>
-                            <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "M" && "border-verde"}`} onClick={() => setManequim("M")}>M</span>
-                            <span className={`border px-3 py-1 rounded cursor-pointer hover:border-verde duration-200 ${manequim == "G" && "border-verde"}`} onClick={() => setManequim("G")}>G</span>
+                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "P" && "bg-verde text-white"}`} onClick={() => setManequim("P")}>P</span>
+                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "M" && "bg-verde text-white"}`} onClick={() => setManequim("M")}>M</span>
+                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "G" && "bg-verde text-white"}`} onClick={() => setManequim("G")}>G</span>
                         </div>
                     </div>
 
                     <div className="flex gap-4 items-center">
-                        <div className="flex">
+                        <div className="flex bg-gray-300">
                             <div className="flex border border-black/20 rounded py-3 px-6 items-center text-sm justify-center gap-3">
                                 <BiMinus className="cursor-pointer text-lg hover:text-verde duration-200" onClick={decrementar} />
                                 <div className="text-center">{qtd}</div>

@@ -104,3 +104,21 @@ export const usePesquisarProduto = () => {
         }
     })
 }
+
+export const useFavoritar = () => {
+    return useMutation({
+        mutationFn: async (dados) => {
+            const resposta = await API.post("/favoritos", dados, {
+                headers: {
+                    Authorization: "Bearer " + dados.token
+                }
+            })
+            return resposta.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey:["favoritos"]
+            })
+        }
+    })
+}

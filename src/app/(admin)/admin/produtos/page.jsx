@@ -48,6 +48,8 @@ const AdminProduto = () => {
 
   function criar(dados) {
     dados.tamanho = dados.tamanho.toString();
+    dados.cor = dados.cores.toString();
+    delete dados.cores;
     criarProduto(dados, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
@@ -66,7 +68,8 @@ const AdminProduto = () => {
 
   function editar(dados) {
     dados.tamanho = dados.tamanho.toString();
-    dados.cor = dados.cor.toString();
+    dados.cor = dados.cores.toString();
+    delete dados.cores;
     editarProduto(dados, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
@@ -166,7 +169,7 @@ const AdminProduto = () => {
                     descricao: produto.descricao,
                     tamanho: produto.tamanho.split(","),
                     peso: produto.peso,
-                    // cor: produto.cor,
+                    cores: produto.cor ? produto.cor.split(",") : [],
                     valor: produto.valor,
                     estoque: produto.estoque,
                     id_categoria: produto.id_categoria,
@@ -251,14 +254,16 @@ const AdminProduto = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item label="Cores" required>
-            <Form.List name="cor">
+          <Form.Item label="cores" required>
+            <Form.List name="cores">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map((field) => (
-                    <div key={field.key} className="flex gap-3">
+                    <div key={`c-${field.key}`} className="flex gap-3">
                       <Form.Item
-                        {...field}
+                        key={field.key}
+                        name={field.name}
+                        fieldKey={field.fieldKey}
                         rules={[
                           { required: true, message: "Selecione uma cor" },
                         ]}
@@ -395,14 +400,16 @@ const AdminProduto = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item label="Cores" required>
-            <Form.List name="cor">
+          <Form.Item label="cores" required>
+            <Form.List name="cores">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map((field) => (
-                    <div key={field.key} className="flex gap-3">
+                    <div key={`e-${field.key}`} className="flex gap-3">
                       <Form.Item
-                        {...field}
+                        key={field.key}
+                        name={field.name}
+                        fieldKey={field.fieldKey}
                         rules={[
                           { required: true, message: "Selecione uma cor" },
                         ]}
