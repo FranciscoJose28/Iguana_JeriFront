@@ -3,7 +3,7 @@
 import Image from "next/image";
 import produto1 from "@/assets/produto1.jpg"
 import { use, useContext, useEffect, useState } from "react";
-import { useBuscarProduto, useFavoritar } from "@/hooks/produtoHooks";
+import { useBuscarFavoritos, useBuscarProduto, useFavoritar } from "@/hooks/produtoHooks";
 import { toast, ToastContainer } from "react-toastify";
 import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 import { LuChevronRight } from "react-icons/lu";
@@ -28,6 +28,7 @@ const ProdutoDetalhe = ({ params }) => {
     const pathname = usePathname();
     const [usuario, setUsuario] = useState(null);
     const [token, setToken] = useState(null);
+    const { data: favoritos = [] } = useBuscarFavoritos(usuario?.id);
 
     function incrementar(estoque) {
         if (qtd < estoque) {
@@ -68,9 +69,7 @@ const ProdutoDetalhe = ({ params }) => {
             setUrlProduto(pathname)
             window.location.href = "/login"
         } else {
-            console.log("log", usuario);
-
-            favoritando({ id_cliente: JSON.parse(usuario).id, id_produto: produto.id, token }, {
+            favoritando({ id_cliente: usuario.id, id_produto: produto.id, token }, {
                 onSuccess: (response) => {
                     api.success({
                         description: response.mensagem
@@ -81,11 +80,9 @@ const ProdutoDetalhe = ({ params }) => {
         }
     }
 
-    console.log(produto);
-
     useEffect(() => {
         const t = sessionStorage.getItem("token");
-        const u = sessionStorage.getItem("usuario");
+        const u = JSON.parse(sessionStorage.getItem("usuario"));
         setToken(t)
         setUsuario(u)
 
@@ -133,7 +130,7 @@ const ProdutoDetalhe = ({ params }) => {
                             <h2 className="text-xl font-semibold flex-1">{produto?.nome}</h2>
                             <div className="flex items-center gap-4 *:text-2xl *:hover:text-verde *:duration-200 *:cursor-pointer">
                                 <BiShare className="rotate-y-180" />
-                                <BiHeart onClick={favoritar} />
+                                <BiHeart onClick={favoritar} className={(favoritos || []).find(favorito => favorito.id_produto == produto?.id) ? "text-verde":""} />
                             </div>
                         </div>
                         <p className="text-gray-400 text-sm mb-2">Referência do produto</p>
@@ -141,16 +138,16 @@ const ProdutoDetalhe = ({ params }) => {
                             <p className="text-black mt-4 text-4xl font-semibold">R$ {produto?.valor.toFixed(2)}</p>
                             <p className="text-sm text-gray-500">Em até 2x de R$ {(produto?.valor / 2).toFixed(2)} sem juros</p>
                         </div>
-                        <Collapse expandIconPosition="end" ghost items={
+                        <Collapse expandIconPosition="end" className="[&_.ant-collapse-expand-icon]:text-slate-400" ghost items={
                             [
                                 {
                                     key: '1',
-                                    label: <div className="text-2xl -ml-4">Descrição</div>,
+                                    label: <div className="text-sm -ml-4 text-verde font-semibold">Sobre a peça</div>,
                                     children: <p className="whitespace-pre-line leading-5">{produto?.descricao}</p>,
                                 }
                             ]
                         } />
-
+                        <div className="border-b border-slate-300"></div>
                     </div>
 
                     {

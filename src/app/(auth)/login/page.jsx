@@ -34,12 +34,11 @@ const Login = () => {
           if (urlProduto) {
             navigate.push(urlProduto);           
           } else{
-            navigate.push("/meus-pedidos");
+            navigate.push("/meu-perfil");
           }
         }
       },
       onError: (resposta) => {
-        console.log(resposta.message);
         
         // api[resposta.tipo]({
         //   description: resposta.mensagem,
@@ -50,23 +49,23 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <form className="w-[350px] border border-black/15 rounded-lg p-4">
-        <h2 className="text-2xl text-center font-bold mb-6">
+      <form className="w-[420px]">
+        <h2 className="text-2xl text-center text-verde font-semibold mb-6">
           Seja bem-vinda(o)
         </h2>
-        <label className="block mb-1 text-xs font-bold">Email</label>
+        <label className="block mb-1 text-sm text-verde font-semibold">E-mail</label>
         <input
-          className="w-full h-[40px] border border-black/15 pl-3 rounded mb-4"
+          className="w-full h-12 border border-black/15 pl-3 rounded mb-4"
           type="email"
-          placeholder="email@email.com"
+          placeholder="Email@email.com"
           onChange={(e) => {
             formRef.current = { ...formRef.current, email: e.target.value };
           }}
           required
         />
-        <label className="block mb-1 text-xs font-bold">Senha</label>
+        <label className="block mb-1 text-sm text-verde font-semibold">Senha</label>
         <input
-          className="w-full h-[40px] border border-black/15 pl-3 rounded mb-4"
+          className="w-full h-10 border border-black/15 pl-3 rounded mb-2"
           type="password"
           placeholder="********"
           onChange={(e) => {
@@ -74,18 +73,18 @@ const Login = () => {
           }}
           required
         />
-        <a className="block text-center underline mb-4" href="/mudar-senha">
+        <a className="block text-end text-xs text-slate-500 hover:text-verde underline mb-6" href="/mudar-senha">
           Esqueceu sua senha?
         </a>
         <button
-          className="w-full h-[40px] bg-black text-white font-bold rounded mb-4 cursor-pointer hover:bg-verde duration-200"
+          className="w-full h-13 bg-verde text-white font-semibold rounded mb-4 cursor-pointer hover:bg-verde/85 duration-200"
           onClick={login}
         >
           Entrar
         </button>
-        <p className="text-xs text-center">
+        <p className="text-xs text-center text-slate-500">
           Não tem uma conta ainda?{" "}
-          <a className="underline" href="/cadastro">
+          <a className="underline hover:text-verde" href="/cadastro">
             Criar uma conta
           </a>{" "}
         </p>

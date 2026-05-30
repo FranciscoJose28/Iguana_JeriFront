@@ -1,13 +1,15 @@
 "use client";
-import { BiSearch, BiShoppingBag } from "react-icons/bi";
+import { BiEnvelope, BiHeart, BiSearch, BiShoppingBag } from "react-icons/bi";
 import { AiOutlineUser } from "react-icons/ai";
 import LogoMenor from "@/assets/LogoMenor.png";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Carrinho from "./Carrinho";
 import { CarrinhoContext } from "@/contexts/CarrinhoContext";
 import { usePesquisarProduto } from "@/hooks/produtoHooks";
 import { useRouter } from "next/navigation";
+import { useLogin } from "@/hooks/clientesHooks";
+import { AntContext } from "@/contexts/AntContext";
 
 const Header = () => {
   const { carrinho, mostrarGaveta, setMostrarGaveta } =
@@ -16,6 +18,13 @@ const Header = () => {
   const { mutateAsync: pesquisarProduto } = usePesquisarProduto();
   const router = useRouter();
   const [pesquisa, setPesquisa] = useState("");
+  const [usuario, setUsuario] = useState(null);
+  const formRef = useRef(null);
+  const { mutateAsync: fazerLogin } = useLogin();
+  const { api } = useContext(AntContext);
+  const navigate = useRouter();
+  const { urlProduto } = useContext(CarrinhoContext);
+  const [mostrarLogin, setMostrarLogin] = useState(false);
 
   function mostrarCarrinho() {
     setMostrarGaveta(true);
@@ -31,11 +40,52 @@ const Header = () => {
     }
   }
 
+  function login() {
+    event.preventDefault();
+    fazerLogin(formRef.current, {
+      onSuccess: (resposta) => {
+        if (!resposta.token) {
+          api[resposta.tipo]({
+            description: resposta.mensagem,
+          });
+          return;
+        }
+
+        document.cookie = `token=${resposta.token}; path=/; max-age=86400`;
+        sessionStorage.setItem("token", resposta.token);
+        sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
+
+        if (
+          resposta.usuario.niveis &&
+          resposta.usuario.niveis.nome == "admin"
+        ) {
+          navigate.push("/admin");
+        } else {
+          if (urlProduto) {
+            navigate.push(urlProduto);
+          } else {
+            navigate.push("/meu-perfil");
+          }
+        }
+      },
+      onError: (resposta) => {
+        // api[resposta.tipo]({
+        //   description: resposta.mensagem,
+        // });
+      },
+    });
+  }
+
   useEffect(() => {
-    if(pesquisa?.length == ""){
-        setProdutos([])
+    if (pesquisa?.length == "") {
+      setProdutos([]);
     }
-  },[pesquisa])
+  }, [pesquisa]);
+
+  useEffect(() => {
+    const u = sessionStorage.getItem("usuario");
+    setUsuario(u);
+  }, []);
 
   return (
     <>
@@ -89,7 +139,7 @@ const Header = () => {
               type="text"
               onChange={(e) => {
                 pesquisar(e.target.value);
-                setPesquisa(e.target.value)
+                setPesquisa(e.target.value);
               }}
             />
             <BiSearch
@@ -115,9 +165,94 @@ const Header = () => {
               </div>
             )}
           </div>
-          <a href="/login" className="hover:text-verde duration-200">
-            <AiOutlineUser size={24} />
-          </a>
+
+          <div className="relative">
+            <AiOutlineUser
+              size={24}
+              onClick={() => setMostrarLogin(!mostrarLogin)}
+              className="hover:text-verde duration-200 cursor-pointer"
+            />
+
+            <div
+              className={`absolute top-full -right-5 mt-5 w-100 bg-white rounded-2xl shadow-2xl p-5 duration-200 border border-black/10 ${!mostrarLogin ? "opacity-0 invisible translate-y-2" : "opacity-100 visible translate-y-0"}`}
+            >
+              <div className="absolute -top-3 right-5 w-6 h-6 bg-white border-l border-t border-black/10 rotate-45"></div>
+
+              <h1 className="font-semibold text-verde text-xl mb-1">
+                Olá, visitante
+              </h1>
+
+              <p className="mb-2 text-slate-400">Entrar com email e senha</p>
+
+              <form className="border border-black/15 rounded-xl p-4 bg-white relative z-10">
+                <label className="block mb-1 text-xs text-slate-600 font-bold">
+                  Email
+                </label>
+
+                <div className="relative w-full mb-4">
+                  <BiEnvelope
+                    size={20}
+                    className="absolute left-3 top-2.5 text-gray-400 z-10"
+                  />
+
+                  <input
+                    className="w-full h-10 border border-black/15 pl-10 rounded"
+                    type="email"
+                    placeholder="email@email.com"
+                    onChange={(e) => {
+                      formRef.current = {
+                        ...formRef.current,
+                        email: e.target.value,
+                      };
+                    }}
+                    required
+                  />
+                </div>
+
+                <label className="block mb-1 text-xs text-slate-600 font-bold">
+                  Senha
+                </label>
+
+                <input
+                  className="w-full h-10 border border-black/15 pl-3 rounded mb-4"
+                  type="password"
+                  placeholder="********"
+                  onChange={(e) => {
+                    formRef.current = {
+                      ...formRef.current,
+                      senha: e.target.value,
+                    };
+                  }}
+                  required
+                />
+
+                <a
+                  className="block text-center text-sm text-slate-500 underline mb-4 hover:text-verde"
+                  href="/mudar-senha"
+                >
+                  Esqueceu sua senha?
+                </a>
+
+                <button
+                  className="w-full h-10 bg-verde text-white font-bold rounded mb-4 cursor-pointer hover:bg-verde/60 duration-200"
+                  onClick={login}
+                >
+                  Entrar
+                </button>
+
+                <p className="text-xs text-center text-slate-600">
+                  Não tem uma conta ainda?{" "}
+                  <a
+                    className="underline  hover:text-verde duration-200"
+                    href="/cadastro"
+                  >
+                    Criar uma conta
+                  </a>
+                </p>
+              </form>
+            </div>
+          </div>
+
           <div className="relative">
             <BiShoppingBag
               size={24}
@@ -130,6 +265,15 @@ const Header = () => {
               </div>
             )}
           </div>
+
+          {usuario ? (
+            <a href="/meu-perfil/favoritos">
+              <BiHeart
+                size={24}
+                className="hover:text-verde duration-200 cursor-pointer"
+              />
+            </a>
+          ) : null}
         </div>
       </header>
       <div

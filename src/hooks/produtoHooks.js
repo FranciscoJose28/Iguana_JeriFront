@@ -122,3 +122,19 @@ export const useFavoritar = () => {
         }
     })
 }
+
+export const useBuscarFavoritos = (id) => {
+    return useQuery({
+        queryKey: ["favoritos"],
+        queryFn: async () => {
+            const resposta = await API.get("/favoritos/" + id)
+            return resposta.data
+        },
+        enabled: !!id,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey:["favoritos"]
+            })
+        }
+    })
+}
