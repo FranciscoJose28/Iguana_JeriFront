@@ -215,35 +215,72 @@ const AdminProduto = () => {
 
           <Form.Item
             label={"Tamanho"}
-            name={"tamanho"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              options={[
-                {
-                  value: "PP",
-                  label: "PP",
-                },
-                {
-                  value: "P",
-                  label: "P",
-                },
-                {
-                  value: "M",
-                  label: "M",
-                },
-                {
-                  value: "G",
-                  label: "G",
-                },
-                {
-                  value: "GG",
-                  label: "GG",
-                },
-              ]}
-            />
+            <Form.List name="tamanho">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <div key={`c-${field.key}`} className="flex gap-3">
+                      <Form.Item
+                        key={"s" + field.key}
+                        name={"s" + field.name}
+                        fieldKey={"s" + field.fieldKey}
+                      >
+                        <Select
+                          mode="multiple"
+                          allowClear
+                          options={[
+                            {
+                              value: "PP",
+                              label: "PP",
+                            },
+                            {
+                              value: "P",
+                              label: "P",
+                            },
+                            {
+                              value: "M",
+                              label: "M",
+                            },
+                            {
+                              value: "G",
+                              label: "G",
+                            },
+                            {
+                              value: "GG",
+                              label: "GG",
+                            },
+                          ]}
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        key={field.key}
+                        name={field.name}
+                        fieldKey={field.fieldKey}
+                        rules={[
+                          { required: true, message: "Selecione uma cor" },
+                        ]}
+                      >
+                        <Input
+                          type="text"
+                        />
+                      </Form.Item>
+
+                      <Button
+                        onClick={() => remove(field.name)}
+                        icon={<BiTrash />}
+                      ></Button>
+                    </div>
+                  ))}
+
+                  <Button type="dashed" onClick={() => add()}>
+                    Adicionar cor
+                  </Button>
+                </>
+              )}
+            </Form.List>
           </Form.Item>
 
           <Form.Item
@@ -270,7 +307,6 @@ const AdminProduto = () => {
                       >
                         <Input
                           type="color"
-                          className="w-9! h-9! p-0! border-0!"
                         />
                       </Form.Item>
 
@@ -294,7 +330,7 @@ const AdminProduto = () => {
             name={"valor"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber style={{ width: "100% !important" }} />
+            <InputNumber />
           </Form.Item>
 
           <Form.Item
@@ -325,7 +361,7 @@ const AdminProduto = () => {
           </Form.Item>
 
           <Form.Item label={"Desconto"} name={"desconto"}>
-            <InputNumber className="w-full!" />
+            <InputNumber />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
@@ -416,7 +452,6 @@ const AdminProduto = () => {
                       >
                         <Input
                           type="color"
-                          className="w-9! h-9! p-0! border-0!"
                         />
                       </Form.Item>
 
@@ -440,7 +475,7 @@ const AdminProduto = () => {
             name={"valor"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
           >
-            <InputNumber className="w-full!" />
+            <InputNumber />
           </Form.Item>
 
           <Form.Item
@@ -471,7 +506,7 @@ const AdminProduto = () => {
           </Form.Item>
 
           <Form.Item label={"Desconto"} name={"desconto"}>
-            <InputNumber className="w-full!" />
+            <InputNumber />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">

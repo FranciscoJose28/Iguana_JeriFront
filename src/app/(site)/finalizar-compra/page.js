@@ -83,7 +83,7 @@ const FinalizarCompra = () => {
     }
 
     return (
-        <div className="max-w-6xl mx-auto items-start py-30 grid grid-cols-2 gap-8 relative">
+        <div className="max-w-6xl mx-auto px-6 sm:px-30 items-start py-10 grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
             <div>
                 <div className="bg-white mb-4 p-4 rounded">
                     <div className="flex items-center mb-4">
@@ -198,7 +198,7 @@ const FinalizarCompra = () => {
                                 <label className="block text-sm font-medium text-gray-700">Estado</label>
                                 <select
                                     ref={estadoREF}
-                                    className="w-full border border-gray-300 rounded-md h-12! focus:outline-none focus:ring-1 focus:ring-verde" >
+                                    className="w-full border border-gray-300 rounded-md h-12 focus:outline-none focus:ring-1 focus:ring-verde" >
                                     {
                                         (estados || []).map(estado => (
                                             <option key={estado.id}>{estado.sigla}</option>
@@ -260,7 +260,7 @@ const FinalizarCompra = () => {
                 </div>
             </div>
 
-            <div className="sticky top-30 bg-white p-4 rounded">
+            <div className="sticky top-6 sm:top-[30px] bg-white p-4 rounded">
                 <div className="flex items-center gap-3 mb-4 border-b border-black/40">
                     <LuReceiptText size={24} className="text-verde" />
                     <span className="text-2xl font-serif text-verde">Resumo do pedido</span>

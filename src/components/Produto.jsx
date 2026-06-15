@@ -85,7 +85,7 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
             </div>
 
             <div className="flex gap-2">
-                <div className="flex w-[100px] bg-black/10 items-center">
+                <div className="flex w-24 bg-black/10 items-center">
                     <span className="flex-1 text-center">{quantidade}</span>
                     <div>
                         <BiPlus className="cursor-pointer" onClick={incrementar} />

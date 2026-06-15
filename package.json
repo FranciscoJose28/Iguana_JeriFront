@@ -9,6 +9,7 @@
     "mock": "npx json-server ./src/mock/mock.json --port 8000 --watch"
   },
   "dependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@mercadopago/sdk-react": "^1.0.7",
     "@react-input/mask": "^2.0.4",
     "@tanstack/react-query": "^5.90.5",

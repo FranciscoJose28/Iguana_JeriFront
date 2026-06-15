@@ -16,7 +16,7 @@ const AdminLayout = ({ children }) => {
     const usuario = JSON.parse(sessionStorage.getItem("usuario")) || null
 
     if (!token) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 

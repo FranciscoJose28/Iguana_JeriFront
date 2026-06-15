@@ -24,22 +24,23 @@ const Login = () => {
           return;
         }
 
-        document.cookie = `token=${resposta.token}; path=/; max-age=86400`;
         sessionStorage.setItem("token", resposta.token);
         sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
 
-        if(resposta.usuario.niveis && resposta.usuario.niveis.nome == "admin"){
+        if (
+          resposta.usuario.niveis &&
+          resposta.usuario.niveis.nome == "admin"
+        ) {
           navigate.push("/admin");
-        } else{
+        } else {
           if (urlProduto) {
-            navigate.push(urlProduto);           
-          } else{
+            navigate.push(urlProduto);
+          } else {
             navigate.push("/meu-perfil");
           }
         }
       },
       onError: (resposta) => {
-        
         // api[resposta.tipo]({
         //   description: resposta.mensagem,
         // });
@@ -53,7 +54,9 @@ const Login = () => {
         <h2 className="text-2xl text-center text-verde font-semibold mb-6">
           Seja bem-vinda(o)
         </h2>
-        <label className="block mb-1 text-sm text-verde font-semibold">E-mail</label>
+        <label className="block mb-1 text-sm text-verde font-semibold">
+          E-mail
+        </label>
         <input
           className="w-full h-12 border border-black/15 pl-3 rounded mb-4"
           type="email"
@@ -63,7 +66,9 @@ const Login = () => {
           }}
           required
         />
-        <label className="block mb-1 text-sm text-verde font-semibold">Senha</label>
+        <label className="block mb-1 text-sm text-verde font-semibold">
+          Senha
+        </label>
         <input
           className="w-full h-10 border border-black/15 pl-3 rounded mb-2"
           type="password"
@@ -73,7 +78,10 @@ const Login = () => {
           }}
           required
         />
-        <a className="block text-end text-xs text-slate-500 hover:text-verde underline mb-6" href="/mudar-senha">
+        <a
+          className="block text-end text-xs text-slate-500 hover:text-verde underline mb-6"
+          href="/mudar-senha"
+        >
           Esqueceu sua senha?
         </a>
         <button

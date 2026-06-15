@@ -13,8 +13,8 @@ import c11 from "@/assets/icon-visa.webp"
 
 const Footer = () => {
     return (
-        <footer className=" bg-black text-white p-30">
-            <div className="grid grid-cols-3 gap-10">
+        <footer className=" bg-black text-white px-6 sm:px-30 py-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
                 <div>
                     <h3 className="text-sm font-bold tracking-widest mb-4">CONTA</h3>
                     <ul className="space-y-3 text-gray-300 text-sm">

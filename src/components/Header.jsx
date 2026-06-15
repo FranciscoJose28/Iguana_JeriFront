@@ -1,5 +1,5 @@
 "use client";
-import { BiEnvelope, BiHeart, BiSearch, BiShoppingBag } from "react-icons/bi";
+import { BiChevronRight, BiEnvelope, BiHeart, BiSearch, BiShoppingBag, BiSolidHeart, BiSolidLogIn, BiSolidShoppingBag, BiSolidUserCircle } from "react-icons/bi";
 import { AiOutlineUser } from "react-icons/ai";
 import LogoMenor from "@/assets/LogoMenor.png";
 import Image from "next/image";
@@ -10,10 +10,16 @@ import { usePesquisarProduto } from "@/hooks/produtoHooks";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/clientesHooks";
 import { AntContext } from "@/contexts/AntContext";
+import { Tooltip } from "antd";
 
 const Header = () => {
-  const { carrinho, mostrarGaveta, setMostrarGaveta } =
-    useContext(CarrinhoContext);
+  const {
+    carrinho,
+    mostrarGaveta,
+    setMostrarGaveta,
+    mostrarLogin,
+    setMostrarLogin,
+  } = useContext(CarrinhoContext);
   const [produtos, setProdutos] = useState([]);
   const { mutateAsync: pesquisarProduto } = usePesquisarProduto();
   const router = useRouter();
@@ -24,7 +30,8 @@ const Header = () => {
   const { api } = useContext(AntContext);
   const navigate = useRouter();
   const { urlProduto } = useContext(CarrinhoContext);
-  const [mostrarLogin, setMostrarLogin] = useState(false);
+  const loginRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   function mostrarCarrinho() {
     setMostrarGaveta(true);
@@ -51,9 +58,10 @@ const Header = () => {
           return;
         }
 
-        document.cookie = `token=${resposta.token}; path=/; max-age=86400`;
         sessionStorage.setItem("token", resposta.token);
         sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
+
+        document.cookie = `token=${resposta.token}; path=/`;
 
         if (
           resposta.usuario.niveis &&
@@ -68,24 +76,20 @@ const Header = () => {
           }
         }
       },
-      onError: (resposta) => {
-        // api[resposta.tipo]({
-        //   description: resposta.mensagem,
-        // });
-      },
     });
   }
 
   useEffect(() => {
-    if (pesquisa?.length == "") {
-      setProdutos([]);
-    }
-  }, [pesquisa]);
-
-  useEffect(() => {
     const u = sessionStorage.getItem("usuario");
-    setUsuario(u);
+
+    if (u) {
+      setUsuario(JSON.parse(u));
+    }
+
+    setMounted(true);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <>
@@ -166,101 +170,175 @@ const Header = () => {
             )}
           </div>
 
-          <div className="relative">
-            <AiOutlineUser
-              size={24}
-              onClick={() => setMostrarLogin(!mostrarLogin)}
-              className="hover:text-verde duration-200 cursor-pointer"
-            />
+          <div className="relative" ref={loginRef}>
+            <Tooltip title="Meu perfil">
+              {usuario ? (
+                <div
+                  onClick={() => setMostrarLogin(!mostrarLogin)}
+                  className="hover:text-verde duration-200 cursor-pointer font-medium"
+                >
+                  {usuario.nome}
+                </div>
+              ) : (
+                <AiOutlineUser
+                  size={24}
+                  onClick={() => setMostrarLogin(!mostrarLogin)}
+                  className="hover:text-verde duration-200 cursor-pointer"
+                />
+              )}
+            </Tooltip>
 
             <div
-              className={`absolute top-full -right-5 mt-5 w-100 bg-white rounded-2xl shadow-2xl p-5 duration-200 border border-black/10 ${!mostrarLogin ? "opacity-0 invisible translate-y-2" : "opacity-100 visible translate-y-0"}`}
+              className={`absolute top-full right-1/2 translate-x-8 mt-5 bg-white rounded-2xl shadow-2xl duration-200 border border-black/10 ${!mostrarLogin ? "opacity-0 invisible translate-y-2" : "opacity-100 visible translate-y-0"}`}
             >
               <div className="absolute -top-3 right-5 w-6 h-6 bg-white border-l border-t border-black/10 rotate-45"></div>
 
-              <h1 className="font-semibold text-verde text-xl mb-1">
-                Olá, visitante
-              </h1>
-
-              <p className="mb-2 text-slate-400">Entrar com email e senha</p>
-
-              <form className="border border-black/15 rounded-xl p-4 bg-white relative z-10">
-                <label className="block mb-1 text-xs text-slate-600 font-bold">
-                  Email
-                </label>
-
-                <div className="relative w-full mb-4">
-                  <BiEnvelope
-                    size={20}
-                    className="absolute left-3 top-2.5 text-gray-400 z-10"
-                  />
-
-                  <input
-                    className="w-full h-10 border border-black/15 pl-10 rounded"
-                    type="email"
-                    placeholder="email@email.com"
-                    onChange={(e) => {
-                      formRef.current = {
-                        ...formRef.current,
-                        email: e.target.value,
-                      };
-                    }}
-                    required
-                  />
+              {usuario ? (
+                <div className="w-70 p-1">
+                  <ul className="mt-5 bg-white rounded *:cursor-pointer">
+                    <li>
+                      <a
+                        href="/meu-perfil"
+                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                      >
+                        {" "}
+                        <div className="flex items-center gap-3">
+                          <BiSolidUserCircle /> Meus dados
+                        </div>{" "}
+                        <BiChevronRight />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/meu-perfil/pedidos"
+                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                      >
+                        <div className="flex items-center gap-3">
+                          <BiSolidShoppingBag /> Meus pedidos
+                        </div>{" "}
+                        <BiChevronRight />
+                      </a>
+                    </li>
+                    <li className="mb-2">
+                      <a
+                        href="/meu-perfil/favoritos"
+                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                      >
+                        <div className="flex items-center gap-3">
+                          <BiSolidHeart /> Favoritos
+                        </div>{" "}
+                        <BiChevronRight />
+                      </a>
+                    </li>
+                    <li className="border-t border-slate-200 pt-2">
+                      <a
+                        onClick={() => {
+                          sessionStorage.clear();
+                          window.location.href = "/";
+                        }}
+                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                      >
+                        {" "}
+                        <div className="flex items-center gap-3">
+                          <BiSolidLogIn /> Sair
+                        </div>{" "}
+                        <BiChevronRight />
+                      </a>
+                    </li>
+                  </ul>
                 </div>
+              ) : (
+                <div className="w-100 p-5">
+                  <h1 className="font-semibold text-verde text-xl mb-1">
+                    Olá, visitante
+                  </h1>
 
-                <label className="block mb-1 text-xs text-slate-600 font-bold">
-                  Senha
-                </label>
+                  <p className="mb-2 text-slate-400">
+                    Entrar com email e senha
+                  </p>
 
-                <input
-                  className="w-full h-10 border border-black/15 pl-3 rounded mb-4"
-                  type="password"
-                  placeholder="********"
-                  onChange={(e) => {
-                    formRef.current = {
-                      ...formRef.current,
-                      senha: e.target.value,
-                    };
-                  }}
-                  required
-                />
+                  <form className="border border-black/15 rounded-xl p-4 bg-white relative z-10">
+                    <label className="block mb-1 text-xs text-slate-600 font-bold">
+                      Email
+                    </label>
 
-                <a
-                  className="block text-center text-sm text-slate-500 underline mb-4 hover:text-verde"
-                  href="/mudar-senha"
-                >
-                  Esqueceu sua senha?
-                </a>
+                    <div className="relative w-full mb-4">
+                      <BiEnvelope
+                        size={20}
+                        className="absolute left-3 top-2.5 text-gray-400 z-10"
+                      />
 
-                <button
-                  className="w-full h-10 bg-verde text-white font-bold rounded mb-4 cursor-pointer hover:bg-verde/60 duration-200"
-                  onClick={login}
-                >
-                  Entrar
-                </button>
+                      <input
+                        className="w-full h-10 border border-black/15 pl-10 rounded"
+                        type="email"
+                        placeholder="Email@email.com"
+                        onChange={(e) => {
+                          formRef.current = {
+                            ...formRef.current,
+                            email: e.target.value,
+                          };
+                        }}
+                        required
+                      />
+                    </div>
 
-                <p className="text-xs text-center text-slate-600">
-                  Não tem uma conta ainda?{" "}
-                  <a
-                    className="underline  hover:text-verde duration-200"
-                    href="/cadastro"
-                  >
-                    Criar uma conta
-                  </a>
-                </p>
-              </form>
+                    <label className="block mb-1 text-xs text-slate-600 font-bold">
+                      Senha
+                    </label>
+
+                    <input
+                      className="w-full h-10 border border-black/15 pl-3 rounded mb-4"
+                      type="password"
+                      placeholder="********"
+                      onChange={(e) => {
+                        formRef.current = {
+                          ...formRef.current,
+                          senha: e.target.value,
+                        };
+                      }}
+                      required
+                    />
+
+                    <a
+                      className="block text-center text-sm text-slate-500 underline mb-4 hover:text-verde"
+                      href="/mudar-senha"
+                    >
+                      Esqueceu sua senha?
+                    </a>
+
+                    <button
+                      className="w-full h-10 bg-verde text-white font-bold rounded mb-4 cursor-pointer hover:bg-verde/60 duration-200"
+                      onClick={login}
+                    >
+                      Entrar
+                    </button>
+
+                    <p className="text-xs text-center text-slate-600">
+                      Não tem uma conta ainda?{" "}
+                      <a
+                        className="underline  hover:text-verde duration-200"
+                        href="/cadastro"
+                      >
+                        Criar uma conta
+                      </a>
+                    </p>
+                  </form>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="relative">
-            <BiShoppingBag
-              size={24}
-              className="hover:text-verde duration-200 cursor-pointer"
-              onClick={mostrarCarrinho}
-            />
+            <Tooltip title="Sacola">
+              <BiShoppingBag
+                size={24}
+                className="hover:text-verde duration-200 cursor-pointer"
+                onClick={mostrarCarrinho}
+              />
+            </Tooltip>
+
             {carrinho.length > 0 && (
-              <div className="absolute top-0 right-0 translate-x-1/2 leading-[14px] text-[10px] px-[4px] bg-verde rounded-2xl text-white">
+              <div className="absolute top-0 right-0 translate-x-1/2 leading-3.5 text-[10px] px-1 bg-verde rounded-2xl text-white">
                 {carrinho.length}
               </div>
             )}
@@ -268,10 +346,12 @@ const Header = () => {
 
           {usuario ? (
             <a href="/meu-perfil/favoritos">
-              <BiHeart
-                size={24}
-                className="hover:text-verde duration-200 cursor-pointer"
-              />
+              <Tooltip title="Wishlist">
+                <BiHeart
+                  size={24}
+                  className="hover:text-verde duration-200 cursor-pointer"
+                />
+              </Tooltip>
             </a>
           ) : null}
         </div>

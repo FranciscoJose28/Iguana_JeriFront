@@ -53,6 +53,7 @@ const AdminCliente = () => {
       },
     });
   }
+  
   function deletar(id) {
     deletarCliente(id, {
       onSuccess: (resposta) => {

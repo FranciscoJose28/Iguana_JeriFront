@@ -1,4 +1,5 @@
 "use client"
+import '@ant-design/v5-patch-for-react-19';
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { API } from "@/services";
@@ -21,7 +22,7 @@ const SiteLayout = ({ children }) => {
     return (
         <>
             <Header />
-            <main>{children}</main>
+            <main className='pt-22'>{children}</main>
             <Footer />
         </>
     );

@@ -14,12 +14,12 @@ const Favoritos = () => {
     }, []);
 
     return (
-        <div>
+        <div className="mb-10">
             <h1 className="text-2xl mb-5">Favoritos</h1>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {
                     (favoritos || []).map(favorito => (
-                        <div key={favorito.id}>
+                        <a href={`/produto/${favorito.produto.id}`} key={favorito.id}>
                             <div className="relative w-full h-64">
                                 <Image
                                     src={favorito.produto.produto_imagem[0].imagem}
@@ -33,7 +33,7 @@ const Favoritos = () => {
                             <h3 className="text-center uppercase mt-3 line-clamp-2">{favorito.produto.nome}</h3>
                             <h3 className="text-center text-2xl mt-3">R${favorito.produto.valor.toFixed(2)}</h3>
                             <p className="text-center text-sm text-gray-500">Em até 2x de R$ {(favorito.produto?.valor / 2).toFixed(2)} sem juros</p>
-                        </div>
+                        </a>
                     ))
                 }
             </div>

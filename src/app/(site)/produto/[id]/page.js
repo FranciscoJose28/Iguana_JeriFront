@@ -19,7 +19,7 @@ const ProdutoDetalhe = ({ params }) => {
     const { mutateAsync: buscarProduto } = useBuscarProduto();
     const [produto, setProduto] = useState(null);
     const [manequim, setManequim] = useState("");
-    const { carrinho, setCarrinho, setUrlProduto } = useContext(CarrinhoContext);
+    const { carrinho, setCarrinho, setUrlProduto, setMostrarLogin } = useContext(CarrinhoContext);
     const [qtd, setQtd] = useState(1);
     const [imagemSelecionada, setImagemSelecionada] = useState(null);
     const cores = produto?.cor?.split(",") || [];
@@ -67,7 +67,7 @@ const ProdutoDetalhe = ({ params }) => {
     function favoritar() {
         if (!usuario) {
             setUrlProduto(pathname)
-            window.location.href = "/login"
+            setMostrarLogin(true)
         } else {
             favoritando({ id_cliente: usuario.id, id_produto: produto.id, token }, {
                 onSuccess: (response) => {
@@ -96,7 +96,7 @@ const ProdutoDetalhe = ({ params }) => {
 
     return (
         <div>
-            <div className="flex items-center gap-1 uppercase pt-35 px-30 text-xs text-slate-500 font-bold">
+            <div className="flex items-center gap-1 uppercase pt-20 sm:pt-[35px] px-6 sm:px-30 text-xs text-slate-500 font-bold">
                 <a href="/" className="hover:text-verde cursor-pointer text-slate-400 duration-200">Início</a>
                 <LuChevronRight className="text-slate-400" />
                 <a href={`/categoria/${produto?.categoria.nome}`} className="hover:text-verde cursor-pointer text-slate-400 duration-200">{produto?.categoria.nome}</a>
@@ -104,10 +104,10 @@ const ProdutoDetalhe = ({ params }) => {
                 <h6>{produto?.nome}</h6>
             </div>
 
-            <div className="flex justify-between items-start px-30 py-5 gap-15">
-                <div>
+            <div className="flex flex-col lg:flex-row justify-between items-start px-6 sm:px-30 py-5 gap-6 lg:gap-15">
+                <div className="w-full max-w-[600px]">
                     <img
-                        className="rounded-xl object-cover w-[600px] h-[600px]"
+                        className="rounded-xl object-cover w-full max-w-[600px] h-auto sm:h-[600px]"
                         src={imagemSelecionada}
                         alt="foto do produto"
                     />
@@ -117,14 +117,14 @@ const ProdutoDetalhe = ({ params }) => {
                             <img
                                 key={img.id}
                                 src={img.imagem}
-                                className="w-30 rounded cursor-pointer hover:opacity-70"
+                                className="w-20 sm:w-30 rounded cursor-pointer hover:opacity-70"
                                 onClick={() => setImagemSelecionada(img.imagem)}
                             />
                         ))}
                     </div>
                 </div>
 
-                <div className="flex flex-col items-start gap-6 w-[550px]">
+                <div className="flex flex-col items-start gap-6 w-full sm:w-[550px]">
                     <div>
                         <div className="flex items-start gap-5 ">
                             <h2 className="text-xl font-semibold flex-1">{produto?.nome}</h2>
