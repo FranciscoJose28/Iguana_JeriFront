@@ -9,16 +9,7 @@ import { toast } from "react-toastify";
 import ItemCarrinho from "@/components/ItemCarrinho";
 
 const Carrinho = () => {
-  const { carrinho, setCarrinho, setMostrarGaveta } = useContext(CarrinhoContext);
-  useEffect(() => {
-    const carrinhoSessao = sessionStorage.getItem("carrinho")
-      ? JSON.parse(sessionStorage.getItem("carrinho"))
-      : [];
-
-    if (carrinho.length == 0 && carrinhoSessao.length > 0) {
-      setCarrinho(carrinhoSessao);
-    }
-  }, []);
+  const { carrinho, setMostrarGaveta } = useContext(CarrinhoContext);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -30,9 +21,9 @@ const Carrinho = () => {
           />
           <h2 className="text-lg font-light text-black/40">SUA SACOLA</h2>
         </div>
-        <span className="flex gap-2 items-center text-sm text-black/40 underline hover:text-verde duration-200 cursor-pointer">
+        <a href="/meu-perfil/favoritos" className="flex gap-2 items-center text-sm text-black/40 underline hover:text-verde duration-200 cursor-pointer">
           Meus favoritos <AiOutlineHeart className="text-xl" />
-        </span>
+        </a>
       </div>
 
       {carrinho.length == 0 ? (
@@ -52,7 +43,7 @@ const Carrinho = () => {
           </div>
         </div>
       ) : (
-        <div className="p-4 flex flex-col h-[calc(100vh_-_77px)]">
+        <div className="p-4 flex flex-col h-[calc(100vh-77px)]">
           <div className="flex-1 overflow-auto">
             {carrinho.map((produto) => (
               <ItemCarrinho {...produto} key={produto.id} />

@@ -57,6 +57,11 @@ const Menu = () => {
             label: <Link href="/admin">Admin</Link>,
           },
           {
+            key: "banners",
+            icon: <ShoppingOutlined />,
+            label: <Link href="/admin/banners">Banners</Link>,
+          },
+          {
             key: "produtos",
             icon: <ShoppingOutlined />,
             label: <Link href="/admin/produtos">Produtos</Link>,

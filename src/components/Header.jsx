@@ -1,7 +1,17 @@
 "use client";
-import { BiChevronRight, BiEnvelope, BiHeart, BiSearch, BiShoppingBag, BiSolidHeart, BiSolidLogIn, BiSolidShoppingBag, BiSolidUserCircle } from "react-icons/bi";
+import {
+  BiChevronRight,
+  BiEnvelope,
+  BiHeart,
+  BiSearch,
+  BiShoppingBag,
+  BiSolidHeart,
+  BiSolidLogIn,
+  BiSolidShoppingBag,
+  BiSolidUserCircle,
+} from "react-icons/bi";
 import { AiOutlineUser } from "react-icons/ai";
-import LogoMenor from "@/assets/LogoMenor.png";
+import LogoMaior from "@/assets/LogoMaior.svg";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import Carrinho from "./Carrinho";
@@ -80,6 +90,20 @@ const Header = () => {
   }
 
   useEffect(() => {
+    function handleClickOutside(event) {
+      if (loginRef.current && !loginRef.current.contains(event.target)) {
+        setMostrarLogin(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     const u = sessionStorage.getItem("usuario");
 
     if (u) {
@@ -94,14 +118,17 @@ const Header = () => {
   return (
     <>
       <header className="items-center z-10 w-full bg-white border-b border-black/15 flex justify-between px-30 fixed top-0 left-0">
-        <nav>
+        <nav className="flex items-center gap-10">
+        <div className="">
+          <Image className="h-[50px]" src={LogoMaior} alt="Iguana Jeri" />
+        </div>
           <ul className="flex gap-6">
-            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-black after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Início
               </a>
             </li>
-            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-black after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Biquínis
               </a>
@@ -111,7 +138,7 @@ const Header = () => {
                 <a href="">Conjuntos</a>
               </div>
             </li>
-            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-black after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Roupas
               </a>
@@ -124,16 +151,14 @@ const Header = () => {
                 <a href="">Saídas</a>
               </div>
             </li>
-            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-black after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Maiôs
               </a>
             </li>
           </ul>
         </nav>
-        <div className="absolute top-1/2 left-1/2 -translate-1/2">
-          <Image className="w-[50px]" src={LogoMenor} alt="Iguana Jeri" />
-        </div>
+
         <div className="flex gap-4 items-center">
           <div className="flex items-center relative">
             <input
@@ -338,7 +363,7 @@ const Header = () => {
             </Tooltip>
 
             {carrinho.length > 0 && (
-              <div className="absolute top-0 right-0 translate-x-1/2 leading-3.5 text-[10px] px-1 bg-verde rounded-2xl text-white">
+              <div className="absolute bottom-0 right-0 translate-x-1/2 leading-3.5 text-[10px] px-1 bg-verde rounded-2xl text-white">
                 {carrinho.length}
               </div>
             )}

@@ -53,7 +53,7 @@ const ProdutoDetalhe = ({ params }) => {
                 quantidade: qtd,
                 produto_imagem: produto.produto_imagem,
                 tamanho: manequim,
-                cor: produto.cor,
+                cor: corSelecionada,
                 estoque: produto.estoque,
                 desconto: produto.desconto
             }
@@ -171,9 +171,15 @@ const ProdutoDetalhe = ({ params }) => {
                     <div>
                         <h3 className="font-semibold">Tamanhos:</h3>
                         <div className="flex gap-3 mt-2">
-                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "P" && "bg-verde text-white"}`} onClick={() => setManequim("P")}>P</span>
-                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "M" && "bg-verde text-white"}`} onClick={() => setManequim("M")}>M</span>
-                            <span className={`border w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == "G" && "bg-verde text-white"}`} onClick={() => setManequim("G")}>G</span>
+                            {
+                                ["PP", "P", "M", "G", "GG", "XGG"].map((tamanho) => {
+                                    if (produto && produto.tamanho.split(",").includes(tamanho)) {
+                                        return (<span key={tamanho} className={`border text-sm w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == tamanho && "bg-verde text-white"}`} onClick={() => setManequim(tamanho)}>{tamanho}</span>)
+                                    } else {
+                                        return (<span key={tamanho} className={`border text-sm border-stone-300 text-stone-500 w-9 h-9 flex items-center justify-center rounded-full cursor-not-allowed bg-stone-300 duration-200`}>{tamanho}</span>)
+                                    }
+                                })
+                            }                         
                         </div>
                     </div>
 

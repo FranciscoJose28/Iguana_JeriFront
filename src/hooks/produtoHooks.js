@@ -3,11 +3,11 @@ import { queryClient } from "@/contexts/QueryClient"
 import { API } from "@/services"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
-export const useBuscarProdutos = () => {
+export const useBuscarProdutos = (url = "") => {
     return useQuery({
-        queryKey: ["produtos"],
+        queryKey: ["produtos", url],
         queryFn: async () => {
-            const resposta = await API.get("/produtos")
+            const resposta = await API.get(`/produtos${url}`)
             return resposta.data
         }
     })

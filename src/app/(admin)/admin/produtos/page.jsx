@@ -85,6 +85,7 @@ const AdminProduto = () => {
       },
     });
   }
+
   function deletar(id) {
     deletarProduto(id, {
       onSuccess: (resposta) => {
@@ -551,6 +552,7 @@ const AdminProduto = () => {
           <Form.Item hidden name={"id_produto"}>
             <Input />
           </Form.Item>
+          
           <Form.Item
             label={"Imagem"}
             name={"imagem"}

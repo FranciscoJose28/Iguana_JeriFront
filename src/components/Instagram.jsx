@@ -6,9 +6,9 @@ import instagram3 from "@/assets/instagram3.jpg"
 const Instagram = () => {
     return (
         <div className="px-6 sm:px-30 py-10">
-            <h1 className="text-[48px] sm:text-[80px] text-center bg-gradient-to-b from-black/50 to-white bg-clip-text text-transparen font-thin mb-7">Instagram</h1>
+            <h1 className="text-[48px] sm:text-[80px] text-center text-slate-700 font-thin mb-7">Instagram</h1>
             {/* <h1 className="text-3xl font-bold mb-15">Instagram</h1> */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 -mt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-0">
                 <Image className="h-56 sm:h-[350px] object-cover rounded" src={instagram1} alt="foto do instagram1"/>
                 <Image className="h-56 sm:h-[350px] object-cover rounded" src={instagram2} alt="foto do instagram2"/>
                 <Image className="h-56 sm:h-[350px] object-cover rounded" src={instagram3} alt="foto do instagram3"/>

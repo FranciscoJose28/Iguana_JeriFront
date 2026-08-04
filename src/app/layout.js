@@ -3,6 +3,7 @@ import "./globals.css";
 import QueryProvider from "@/contexts/QueryClient";
 import AntProvider from "@/contexts/AntContext";
 import CarrinhoProvider from "@/contexts/CarrinhoContext";
+import "@ant-design/v5-patch-for-react-19";
 
 
 const geistSans = Geist({
