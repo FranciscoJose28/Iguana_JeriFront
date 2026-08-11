@@ -45,6 +45,7 @@ const FinalizarCompra = () => {
     const [cpf, setCpf] = useState("");
     const [telefone, setTelefone] = useState("");
     const [nascimento, setNascimento] = useState("");
+    const [senha, setSenha] = useState("");
 
     const handleDadosCliente = (campo) => (evento) => {
         setDadosCliente((anterior) => ({
@@ -263,11 +264,23 @@ const FinalizarCompra = () => {
             return;
         }
 
+        if (!senha || senha.trim().length < 6) {
+            api.warning({ description: "Informe uma senha com pelo menos 6 caracteres." });
+            return;
+        }
+
         setVerEntrega(true);
     }
 
     const onSubmit = async ({ formData }) => {
         try {
+            formData.nome = dadosCliente.nome;
+            formData.sobrenome = dadosCliente.sobrenome;
+            formData.email = dadosCliente.email;
+            formData.cpf = cpf;
+            formData.telefone = telefone;
+            formData.nascimento = nascimento;
+            formData.senha = senha;
 
             const { data } = await API.post(
                 "/pagamentos",
@@ -399,16 +412,29 @@ const FinalizarCompra = () => {
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                            <input
-                                required
-                                type="text"
-                                placeholder="dd/mm/aaaa"
-                                value={nascimento}
-                                onChange={(evento) => setNascimento(formatNascimento(evento.target.value))}
-                                className="w-full sm:w-1/2 border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                            />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                <input
+                                    required
+                                    type="text"
+                                    placeholder="dd/mm/aaaa"
+                                    value={nascimento}
+                                    onChange={(evento) => setNascimento(formatNascimento(evento.target.value))}
+                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Senha</label>
+                                <input
+                                    required
+                                    type="password"
+                                    placeholder="Digite sua senha"
+                                    value={senha}
+                                    onChange={(evento) => setSenha(evento.target.value)}
+                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                />
+                            </div>
                         </div>
 
                         <div className="flex items-center gap-2 pt-2">
@@ -431,117 +457,117 @@ const FinalizarCompra = () => {
 
                     {
                         verEntrega ? (
-                           <form className="space-y-4" onSubmit={continuarPagamento}>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">CEP</label>
-                            <input
-                                required
-                                ref={cepREF}
-                                onKeyUp={(evento) => {
-                                    if (evento.target.value.length == 9) {
-                                        buscarCEP(evento.target.value.replace("-", ""))
-                                    }
-                                }}
-                                maxLength={9}
-                                type="text"
-                                className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Endereço</label>
-                                <input ref={enderecoREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Número</label>
-                                <input ref={numeroREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Complemento</label>
-                                <input ref={complementoREF} type="text" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Bairro</label>
-                                <input ref={bairroREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Cidade</label>
-                                <input ref={cidadeREF} type="text" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Estado</label>
-                                <select
-                                    ref={estadoREF}
-                                    className="w-full border border-gray-300 rounded-md h-12 focus:outline-none focus:ring-1 focus:ring-verde" >
-                                    {
-                                        (estados || []).map(estado => (
-                                            <option key={estado.id}>{estado.sigla}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="mb-5 mt-7 font-serif text-sm text-slate-800">Formas de entrega</div>
-                            {
-                                fretes.map(frete => (
-                                    <label
-                                        key={frete.id}
-                                        htmlFor={`frete-${frete.id}`}
-                                        className={`flex justify-between items-center pb-3 p-3 rounded transition cursor-pointer ${freteSelecionado === frete.id ? 'border border-verde bg-green-50' : 'border border-slate-200 hover:border-verde hover:bg-slate-50'}`}
-                                        onClick={() => {
-                                            setFreteSelecionado(frete.id)
-                                            setPreferenceId(null)
+                            <form className="space-y-4" onSubmit={continuarPagamento}>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">CEP</label>
+                                    <input
+                                        required
+                                        ref={cepREF}
+                                        onKeyUp={(evento) => {
+                                            if (evento.target.value.length == 9) {
+                                                buscarCEP(evento.target.value.replace("-", ""))
+                                            }
                                         }}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                id={`frete-${frete.id}`}
-                                                name="freteEscolhido"
-                                                type="radio"
-                                                className="w-5 h-5 accent-verde"
-                                                checked={freteSelecionado === frete.id}
-                                                onChange={() => {
+                                        maxLength={9}
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Endereço</label>
+                                        <input ref={enderecoREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Número</label>
+                                        <input ref={numeroREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Complemento</label>
+                                        <input ref={complementoREF} type="text" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Bairro</label>
+                                        <input ref={bairroREF} type="text" required className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Cidade</label>
+                                        <input ref={cidadeREF} type="text" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Estado</label>
+                                        <select
+                                            ref={estadoREF}
+                                            className="w-full border border-gray-300 rounded-md h-12 focus:outline-none focus:ring-1 focus:ring-verde" >
+                                            {
+                                                (estados || []).map(estado => (
+                                                    <option key={estado.id}>{estado.sigla}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="mb-5 mt-7 font-serif text-sm text-slate-800">Formas de entrega</div>
+                                    {
+                                        fretes.map(frete => (
+                                            <label
+                                                key={frete.id}
+                                                htmlFor={`frete-${frete.id}`}
+                                                className={`flex justify-between items-center pb-3 p-3 rounded transition cursor-pointer ${freteSelecionado === frete.id ? 'border border-verde bg-green-50' : 'border border-slate-200 hover:border-verde hover:bg-slate-50'}`}
+                                                onClick={() => {
                                                     setFreteSelecionado(frete.id)
                                                     setPreferenceId(null)
                                                 }}
-                                            />
-                                            <div>
-                                                <div className="font-semibold text-slate-700">{frete.name}</div>
-                                                <div className="text-xs text-slate-400">Em até {frete.delivery_time} dias úteis</div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className="border-l border-slate-200 pl-4 text-slate-500 text-lg">R$ {frete.price}</div>
-                                        </div>
-                                    </label>
-                                ))
-                            }
-                        </div>
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        id={`frete-${frete.id}`}
+                                                        name="freteEscolhido"
+                                                        type="radio"
+                                                        className="w-5 h-5 accent-verde"
+                                                        checked={freteSelecionado === frete.id}
+                                                        onChange={() => {
+                                                            setFreteSelecionado(frete.id)
+                                                            setPreferenceId(null)
+                                                        }}
+                                                    />
+                                                    <div>
+                                                        <div className="font-semibold text-slate-700">{frete.name}</div>
+                                                        <div className="text-xs text-slate-400">Em até {frete.delivery_time} dias úteis</div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="border-l border-slate-200 pl-4 text-slate-500 text-lg">R$ {frete.price}</div>
+                                                </div>
+                                            </label>
+                                        ))
+                                    }
+                                </div>
 
-                        <button
-                            type="submit"
-                            disabled={criandoPagamento}
-                            className="w-full bg-verde text-white py-3 rounded-md mt-4 hover:bg-verde transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {criandoPagamento
-                                ? "Preparando pagamento..."
-                                : "Ir para o pagamento"}
-                        </button>
-                    </form> 
+                                <button
+                                    type="submit"
+                                    disabled={criandoPagamento}
+                                    className="w-full bg-verde text-white py-3 rounded-md mt-4 hover:bg-verde transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {criandoPagamento
+                                        ? "Preparando pagamento..."
+                                        : "Ir para o pagamento"}
+                                </button>
+                            </form>
                         ) : (
                             <div>Preencha seus dados</div>
-                        ) 
+                        )
                     }
 
-                    
+
                 </div>
                 <div className="bg-white mb-4 p-4 rounded">
                     <div className="flex items-center mb-4">
