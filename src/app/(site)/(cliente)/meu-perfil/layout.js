@@ -24,7 +24,7 @@ const PerfilLayout = ({ children }) => {
     }, [])
 
     return (
-        <div className="pt-6 sm:pt-6 px-6 sm:px-30 flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
+        <div className="pt-6 sm:pt-6 px-6 sm:px-30 flex flex-col sm:flex-row gap-6 sm:gap-10 items-start mb-15">
             <div className="w-full sm:w-72">
                 <h1 className="text-2xl">Olá <span className="text-verde">{usuario?.nome}</span></h1>
                 <ul className="mt-5 bg-white rounded *:cursor-pointer">

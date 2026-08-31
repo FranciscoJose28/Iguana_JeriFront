@@ -15,7 +15,6 @@ import { LuReceiptText } from "react-icons/lu";
 
 const FinalizarCompra = () => {
     const { carrinho } = useContext(CarrinhoContext)
-    console.log(carrinho);
 
     const { data: estados } = useBuscarEstados()
     const { api } = useContext(AntContext)
@@ -46,6 +45,7 @@ const FinalizarCompra = () => {
     const [telefone, setTelefone] = useState("");
     const [nascimento, setNascimento] = useState("");
     const [senha, setSenha] = useState("");
+    const [usuario, setUsuario] = useState(null);
 
     const handleDadosCliente = (campo) => (evento) => {
         setDadosCliente((anterior) => ({
@@ -80,6 +80,7 @@ const FinalizarCompra = () => {
 
     const freteSelecionadoInfo = fretes.find((frete) => frete.id === freteSelecionado)
     const valorFrete = freteSelecionadoInfo ? Number(freteSelecionadoInfo.price) : 0
+    const dias = freteSelecionadoInfo ? Number(freteSelecionadoInfo.delivery_time) : 0
     const subtotal = carrinho.reduce((total, produto) => total + (produto.valor * produto.quantidade), 0)
     const total = carrinho.reduce((total, produto) => total + ((produto.valor - produto.desconto) * produto.quantidade), 0) + valorFrete
     const desconto = carrinho.reduce((total, produto) => total + ((produto.desconto) * produto.quantidade), 0) * -1
@@ -274,14 +275,22 @@ const FinalizarCompra = () => {
 
     const onSubmit = async ({ formData }) => {
         try {
-            formData.nome = dadosCliente.nome;
-            formData.sobrenome = dadosCliente.sobrenome;
-            formData.email = dadosCliente.email;
-            formData.cpf = cpf;
-            formData.telefone = telefone;
-            formData.nascimento = nascimento;
-            formData.senha = senha;
-
+            if (usuario) {
+                formData.usuario_id = usuario.id
+            } else {
+                formData.nome = dadosCliente.nome;
+                formData.sobrenome = dadosCliente.sobrenome;
+                formData.email = dadosCliente.email;
+                formData.cpf = cpf;
+                formData.telefone = telefone;
+                formData.nascimento = nascimento;
+                formData.senha = senha;
+            }
+            formData.produtos = carrinho;
+            formData.transportadora = freteSelecionadoInfo?.name || null;
+            formData.valor_frete = valorFrete;
+            formData.dias = dias;
+            
             const { data } = await API.post(
                 "/pagamentos",
                 formData
@@ -338,120 +347,134 @@ const FinalizarCompra = () => {
         return () => window.removeEventListener("resize", updateSize);
     }, []);
 
+    useEffect(() => {
+        const u = sessionStorage.getItem("usuario");
+
+        if (u) {
+            setUsuario(JSON.parse(u));
+            setVerEntrega(true)
+        }
+    }, []);
+
     return (
         <div className="max-w-6xl mx-auto px-6 sm:px-30 items-start py-10 grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
             <div>
-                <div className="bg-white mb-4 p-4 rounded">
-                    <div className="flex items-center mb-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
+                {
+                    !usuario && (
+                        <div className="bg-white mb-4 p-4 rounded">
+                            <div className="flex items-center mb-4">
+                                {/* <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
                             1
-                        </div>
-                        <h2 className="text-2xl font-serif text-verde">Seus Dados</h2>
-                    </div>
-                    <p className="text-gray-600 mb-6">
-                        Aqui, só o necessário. Usamos suas informações com todo cuidado — e apenas para realizar sua compra.
-                    </p>
-
-                    <form className="space-y-4" onSubmit={irParaEntrega}>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">E-mail</label>
-                            <input
-                                required
-                                type="email"
-                                value={dadosCliente.email}
-                                onChange={handleDadosCliente("email")}
-                                className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Nome</label>
-                                <input
-                                    required
-                                    type="text"
-                                    value={dadosCliente.nome}
-                                    onChange={handleDadosCliente("nome")}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
+                        </div> */}
+                                <h2 className="text-2xl font-serif text-verde">Seus Dados</h2>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Sobrenome</label>
-                                <input
-                                    required
-                                    type="text"
-                                    value={dadosCliente.sobrenome}
-                                    onChange={handleDadosCliente("sobrenome")}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
-                            </div>
-                        </div>
+                            <p className="text-gray-600 mb-6">
+                                Aqui, só o necessário. Usamos suas informações com todo cuidado — e apenas para realizar sua compra.
+                            </p>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">CPF</label>
-                                <input
-                                    required
-                                    type="text"
-                                    placeholder="999.999.999-99"
-                                    value={cpf}
-                                    onChange={(evento) => setCpf(formatCPF(evento.target.value))}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                                <input
-                                    required
-                                    type="tel"
-                                    placeholder="(00) 00000-0000"
-                                    value={telefone}
-                                    onChange={(evento) => setTelefone(formatTelefone(evento.target.value))}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
-                            </div>
-                        </div>
+                            <form className="space-y-4" onSubmit={irParaEntrega}>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">E-mail</label>
+                                    <input
+                                        required
+                                        type="email"
+                                        value={dadosCliente.email}
+                                        onChange={handleDadosCliente("email")}
+                                        className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                    />
+                                </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                                <input
-                                    required
-                                    type="text"
-                                    placeholder="dd/mm/aaaa"
-                                    value={nascimento}
-                                    onChange={(evento) => setNascimento(formatNascimento(evento.target.value))}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Senha</label>
-                                <input
-                                    required
-                                    type="password"
-                                    placeholder="Digite sua senha"
-                                    value={senha}
-                                    onChange={(evento) => setSenha(evento.target.value)}
-                                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
-                                />
-                            </div>
-                        </div>
+                                <div className="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Nome</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            value={dadosCliente.nome}
+                                            onChange={handleDadosCliente("nome")}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Sobrenome</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            value={dadosCliente.sobrenome}
+                                            onChange={handleDadosCliente("sobrenome")}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                </div>
 
-                        <div className="flex items-center gap-2 pt-2">
-                            <input type="checkbox" id="promocoes" className="accent-verde" />
-                            <label htmlFor="promocoes" className="text-sm text-gray-700">Quero receber e-mails com promoções.</label>
-                        </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">CPF</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            placeholder="999.999.999-99"
+                                            value={cpf}
+                                            onChange={(evento) => setCpf(formatCPF(evento.target.value))}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Telefone</label>
+                                        <input
+                                            required
+                                            type="tel"
+                                            placeholder="(00) 00000-0000"
+                                            value={telefone}
+                                            onChange={(evento) => setTelefone(formatTelefone(evento.target.value))}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                </div>
 
-                        <button type="submit" className="w-full bg-verde text-white py-3 rounded-md mt-4 hover:bg-verde transition cursor-pointer">
-                            Ir para a Entrega
-                        </button>
-                    </form>
-                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                        <input
+                                            required
+                                            type="text"
+                                            placeholder="dd/mm/aaaa"
+                                            value={nascimento}
+                                            onChange={(evento) => setNascimento(formatNascimento(evento.target.value))}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Senha</label>
+                                        <input
+                                            required
+                                            type="password"
+                                            placeholder="Digite sua senha"
+                                            value={senha}
+                                            onChange={(evento) => setSenha(evento.target.value)}
+                                            className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-1 focus:ring-verde"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 pt-2">
+                                    <input type="checkbox" id="promocoes" className="accent-verde" />
+                                    <label htmlFor="promocoes" className="text-sm text-gray-700">Quero receber e-mails com promoções.</label>
+                                </div>
+
+                                <button type="submit" className="w-full bg-verde text-white py-3 rounded-md mt-4 hover:bg-verde transition cursor-pointer">
+                                    Ir para a Entrega
+                                </button>
+                            </form>
+                        </div>
+                    )
+                }
+
                 <div className="bg-white mb-4 p-4 rounded">
                     <div className="flex items-center mb-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
+                        {/* <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
                             2
-                        </div>
+                        </div> */}
                         <h2 className="text-2xl font-serif text-verde">Sua Entrega</h2>
                     </div>
 
@@ -563,7 +586,7 @@ const FinalizarCompra = () => {
                                 </button>
                             </form>
                         ) : (
-                            <div>Preencha seus dados</div>
+                            <div className="rounded-md border border-dashed border-slate-300 p-8 text-center text-slate-500">Preencha seus dados</div>
                         )
                     }
 
@@ -571,9 +594,9 @@ const FinalizarCompra = () => {
                 </div>
                 <div className="bg-white mb-4 p-4 rounded">
                     <div className="flex items-center mb-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
+                        {/* <div className="flex items-center justify-center w-8 h-8 rounded-full bg-verde text-white font-semibold mr-3">
                             3
-                        </div>
+                        </div> */}
                         <h2 className="text-2xl font-serif text-verde">Pagamento</h2>
                     </div>
                     {preferenceId ? (
@@ -609,7 +632,7 @@ const FinalizarCompra = () => {
                                         <button
                                             type="button"
                                             onClick={() => setShowSuccessModal(false)}
-                                            className="absolute right-4 top-4 text-slate-500 hover:text-slate-900"
+                                            className="absolute right-4 top-4 text-slate-500 hover:text-slate-900 cursor-pointer"
                                         >
                                             Fechar
                                         </button>
@@ -619,7 +642,7 @@ const FinalizarCompra = () => {
                                             <button
                                                 type="button"
                                                 onClick={handleIrParaPedidos}
-                                                className="inline-flex items-center justify-center rounded-md bg-verde px-6 py-3 text-white transition hover:bg-emerald-600"
+                                                className="inline-flex items-center justify-center rounded-md bg-verde px-6 py-3 text-white transition hover:bg-verde/70 cursor-pointer"
                                             >
                                                 Ir para meus pedidos
                                             </button>

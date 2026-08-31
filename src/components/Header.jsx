@@ -122,7 +122,7 @@ const Header = () => {
         <div className="">
           <Image className="h-[50px]" src={LogoMaior} alt="Iguana Jeri" />
         </div>
-          <ul className="flex gap-6">
+          <ul className="flex gap-6 *:font-semibold *:text-slate-600">
             <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Início
@@ -164,7 +164,7 @@ const Header = () => {
             <input
               value={pesquisa}
               className="h-[30px] border-b focus:outline-0 focus:border-verde duration-200"
-              placeholder="Pesquisar"
+              placeholder="Pesquise aqui..."
               type="text"
               onChange={(e) => {
                 pesquisar(e.target.value);

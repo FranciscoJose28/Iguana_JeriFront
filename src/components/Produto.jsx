@@ -69,12 +69,12 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
                         />
                     </a>
                 </div>
-                <h3 className="h-[48px] text-center uppercase mt-3 line-clamp-2">{nome}</h3>
-                <h3 className="text-center text-2xl mt-3">R${valor.toFixed(2)}</h3>
+                <h3 className="h-12 text-center font-semibold uppercase mt-3 line-clamp-2 text-slate-700">{nome}</h3>
+                <h3 className="text-center text-2xl mt-3 text-slate-600">R${valor.toFixed(2)}</h3>
             </div>
 
             <div className="w-full bg-black/10 mb-2 mt-4">
-                <select className="h-[40px] w-full px-2 cursor-pointer" defaultValue="" onChange={escolherTamanho}>
+                <select className="h-10 w-full px-2 cursor-pointer" defaultValue="" onChange={escolherTamanho}>
                     <option value="" disabled>Selecione</option>
                     <option value="PP">PP</option>
                     <option value="P">P</option>
@@ -92,7 +92,7 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
                         <BiMinus className="cursor-pointer" onClick={decrementar} />
                     </div>
                 </div>
-                <button className="selection:bg-transparent flex-1 bg-black text-white py-2 rounded gap-2 flex items-center justify-center hover:bg-verde duration-200 cursor-pointer" onClick={adicionarCarrinho}>
+                <button className="selection:bg-transparent flex-1 bg-verde text-white py-2 rounded gap-2 flex items-center justify-center hover:bg-verde/70 duration-200 cursor-pointer" onClick={adicionarCarrinho}>
                     <BiShoppingBag /> Comprar
                 </button>
             </div>

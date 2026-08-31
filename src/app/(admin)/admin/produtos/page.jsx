@@ -10,6 +10,7 @@ import {
 } from "@/hooks/produtoHooks";
 import {
   Button,
+  Checkbox,
   Drawer,
   Form,
   Input,
@@ -70,6 +71,7 @@ const AdminProduto = () => {
     dados.tamanho = dados.tamanho.toString();
     dados.cor = dados.cores.toString();
     delete dados.cores;
+    
     editarProduto(dados, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
@@ -144,10 +146,15 @@ const AdminProduto = () => {
         </Button>
       </div>
       <Table dataSource={produtos || []} rowKey={"id"}>
-        <Table.Column dataIndex={"id"} title={"id"} key={"id"} />
         <Table.Column dataIndex={"nome"} title={"nome"} key={"nome"} />
         <Table.Column dataIndex={"valor"} title={"valor"} key={"valor"} />
         <Table.Column dataIndex={"estoque"} title={"estoque"} key={"estoque"} />
+        <Table.Column title={"novidade"} render={(_,produto) => {
+          return produto.novidades ? "sim" : "não"
+        }} />
+        <Table.Column title={"categoria"} render={(_,produto) => {
+          return produto.categoria.nome
+        }} />
         <Table.Column
           className="w-[100px]"
           title="ações"
@@ -175,6 +182,7 @@ const AdminProduto = () => {
                     estoque: produto.estoque,
                     id_categoria: produto.id_categoria,
                     desconto: produto.desconto,
+                    novidades: produto.novidades
                   });
                   setDrawerEditar(true);
                 }}
@@ -365,6 +373,14 @@ const AdminProduto = () => {
             <InputNumber />
           </Form.Item>
 
+          <Form.Item
+            label={"Novidade?"}
+            name={"novidades"}
+            valuePropName="checked"
+          >
+            <Checkbox />
+          </Form.Item>
+
           <Button type="primary" htmlType="submit">
             Criar
           </Button>
@@ -508,6 +524,14 @@ const AdminProduto = () => {
 
           <Form.Item label={"Desconto"} name={"desconto"}>
             <InputNumber />
+          </Form.Item>
+
+          <Form.Item
+            label={"Novidade?"}
+            name={"novidades"}
+            valuePropName="checked"
+          >
+            <Checkbox />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
