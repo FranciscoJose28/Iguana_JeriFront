@@ -76,6 +76,16 @@ const Menu = () => {
             icon: <TagsOutlined />,
             label: <Link href="/admin/clientes">Clientes</Link>,
           },
+          {
+            key: "pedidos",
+            icon: <TagsOutlined />,
+            label: <Link href="/admin/pedidos">Pedidos</Link>,
+          },
+          {
+            key: "site",
+            icon: <TagsOutlined />,
+            label: <Link href="/">Voltar para o site</Link>,
+          }
         ]}
       />
     </Sider>

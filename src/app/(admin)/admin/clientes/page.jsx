@@ -18,7 +18,7 @@ const AdminCliente = () => {
   const { mutateAsync: editarCliente } = useEditarCliente();
   const { mutateAsync: deletarCliente } = useDeletarCliente();
   const { api } = useContext(AntContext);
-  const [ formEditar ] = Form.useForm()
+  const [formEditar] = Form.useForm();
 
   function criar(dados) {
     criarCliente(dados, {
@@ -53,7 +53,7 @@ const AdminCliente = () => {
       },
     });
   }
-  
+
   function deletar(id) {
     deletarCliente(id, {
       onSuccess: (resposta) => {
@@ -70,6 +70,7 @@ const AdminCliente = () => {
       },
     });
   }
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
@@ -80,26 +81,33 @@ const AdminCliente = () => {
       </div>
       <Table dataSource={clientes || []} rowKey={"id"}>
         <Table.Column
-          className="w-[50px]"
+          className="w-12.5"
           dataIndex={"id"}
           title={"id"}
           key={"id"}
         />
         <Table.Column dataIndex={"nome"} title={"nome"} key={"nome"} />
         <Table.Column dataIndex={"email"} title={"email"} key={"email"} />
-        <Table.Column dataIndex={"telefone"} title={"telefone"} key={"telefone"} />
+        <Table.Column
+          dataIndex={"telefone"}
+          title={"telefone"}
+          key={"telefone"}
+        />
         <Table.Column dataIndex={"cpf"} title={"cpf"} key={"cpf"} />
         <Table.Column
-          className="w-[100px]"
+          className="w-25"
           title="ações"
           render={(_, cliente) => (
             <div className="flex gap-3">
-              <Button icon={<BiPencil />} onClick={() => {
-                formEditar.setFieldsValue({
-                    ...cliente
-                })
-                setDrawerEditar(true)
-              }}/>
+              <Button
+                icon={<BiPencil />}
+                onClick={() => {
+                  formEditar.setFieldsValue({
+                    ...cliente,
+                  });
+                  setDrawerEditar(true);
+                }}
+              />
               <Popconfirm
                 title="Aviso"
                 description="Deseja apagar esse registro?"
@@ -113,6 +121,7 @@ const AdminCliente = () => {
           )}
         />
       </Table>
+
       <Drawer open={drawerCriar} onClose={() => setDrawerCriar(false)}>
         <Form layout="vertical" onFinish={criar}>
           <Form.Item
@@ -170,10 +179,7 @@ const AdminCliente = () => {
       </Drawer>
       <Drawer open={drawerEditar} onClose={() => setDrawerEditar(false)}>
         <Form layout="vertical" onFinish={editar} form={formEditar}>
-          <Form.Item
-            name={"id"}
-            hidden
-          >
+          <Form.Item name={"id"} hidden>
             <Input />
           </Form.Item>
           <Form.Item

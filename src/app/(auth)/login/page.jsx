@@ -26,6 +26,7 @@ const Login = () => {
 
         sessionStorage.setItem("token", resposta.token);
         sessionStorage.setItem("usuario", JSON.stringify(resposta.usuario));
+        document.cookie = `token=${resposta.token}; path=/`;
 
         if (
           resposta.usuario.niveis &&
@@ -40,11 +41,11 @@ const Login = () => {
           }
         }
       },
-      onError: (resposta) => {
-        // api[resposta.tipo]({
-        //   description: resposta.mensagem,
-        // });
-      },
+      onError: (error) => {
+            api[error.response.tipo]({
+              description: error.response.mensagem,
+            });
+          },
     });
   }
 

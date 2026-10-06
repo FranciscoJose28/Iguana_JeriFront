@@ -39,6 +39,7 @@ export const useEditarCliente = () => {
         }
     })
 }
+
 export const useDeletarCliente = () => {
     return useMutation({
         mutationFn: async (id) => {
@@ -58,6 +59,20 @@ export const useLogin = () => {
         mutationFn: async (dados) => {
             const resposta = await API.post("/login", dados)
             return resposta.data
+        }
+    })
+}
+
+export const useEditarEndereco = () => {
+    return useMutation({
+        mutationFn: async (dados) => {
+            const resposta = await API.put(`/enderecos/${dados.id_cliente}`, dados)
+            return resposta.data
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey:["clientes"]
+            })
         }
     })
 }

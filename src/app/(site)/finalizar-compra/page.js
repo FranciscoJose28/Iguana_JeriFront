@@ -290,6 +290,13 @@ const FinalizarCompra = () => {
             formData.transportadora = freteSelecionadoInfo?.name || null;
             formData.valor_frete = valorFrete;
             formData.dias = dias;
+            formData.cep = cepREF.current?.value.replace(/\D/g, "") || "";
+            formData.endereco = enderecoREF.current?.value.trim() || "";
+            formData.numero = numeroREF.current?.value.trim() || "";
+            formData.complemento = complementoREF.current?.value.trim() || "";
+            formData.bairro = bairroREF.current?.value.trim() || "";
+            formData.cidade = cidadeREF.current?.value.trim() || "";
+            formData.estado = estadoREF.current?.value || "";
             
             const { data } = await API.post(
                 "/pagamentos",

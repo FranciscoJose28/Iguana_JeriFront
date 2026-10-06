@@ -8,6 +8,8 @@ export const useBuscarBanners = () => {
         queryKey: ["banners"],
         queryFn: async () => {
             const resposta = await API.get("/banners")
+            console.log("RESPOSTA DOS BANNERS:", resposta.data)
+            console.log("É array?", Array.isArray(resposta.data))
             return resposta.data
         }
     })

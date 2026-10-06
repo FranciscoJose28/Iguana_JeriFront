@@ -41,10 +41,9 @@ const ProdutosExpandidos = ({ produtos_pedido }) => {
             />
 
             <Table.Column
-                dataIndex={["produto", "valor"]}
                 title="Preço"
                 key="preco"
-                render={(valor) => `R$ ${valor?.toFixed(2)}`}
+                render={(_,pedido) => `R$ ${(pedido.produto.valor * pedido.quantidade).toFixed(2)}`}
             />
         </Table>
     );
@@ -80,8 +79,8 @@ const MeusPedidos = () => {
                 <Table.Column dataIndex={"data_entrega"} title="Entrega" rowKey="status" render={formatarDataBrasileira} />
                 <Table.Column dataIndex={"valor"} title="Valor" rowKey="status" />
                 <Table.Column dataIndex={"transportadora"} title="Transportadora" rowKey="status" />
-                <Table.Column dataIndex={"total"} title="Total" rowKey="status" />
                 <Table.Column dataIndex={"valor_frete"} title="Frete" rowKey="valor_frete" />
+                <Table.Column render={(_,linha) => (linha.produtos_pedido.reduce((total,item) => total + item.produto.valor,0).toFixed(2))} title="Total" rowKey="status" />
             </Table>
  
         </>

@@ -37,7 +37,7 @@ const Banner = () => {
         {(banners || []).map((banner) => (
           <img
             key={banner.id}  
-            className="h-screen object-cover"
+            className="w-full object-cover"
             src={banner.imagem}
             alt="banner1"
           />

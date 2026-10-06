@@ -27,8 +27,9 @@
       "@/components*": ["./src/components/*"],
       "@/hooks*": ["./src/hooks/*"],
       "@/contexts*": ["./src/contexts/*"],
-      "@/services*": ["./src/services/*"],
-    },  
+      "@/services": ["./src/services/index.js"],
+      "@/services/*": ["./src/services/*"]
+    },
     "strictNullChecks": true
   },
   "include": [

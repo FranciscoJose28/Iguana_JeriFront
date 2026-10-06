@@ -221,6 +221,20 @@ const Header = () => {
               {usuario ? (
                 <div className="w-70 p-1">
                   <ul className="mt-5 bg-white rounded *:cursor-pointer">
+                    {usuario.nivel_id == 1 && (
+                      <li>
+                      <a
+                        href="/admin"
+                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                      >
+                        {" "}
+                        <div className="flex items-center gap-3">
+                          <BiSolidUserCircle /> Painel
+                        </div>{" "}
+                        <BiChevronRight />
+                      </a>
+                    </li>
+                    )}
                     <li>
                       <a
                         href="/meu-perfil"
