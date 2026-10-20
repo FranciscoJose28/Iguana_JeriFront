@@ -96,7 +96,7 @@ const ProdutoDetalhe = ({ params }) => {
 
     return (
         <div>
-            <div className="flex items-center gap-1 uppercase pt-20 sm:pt-[35px] px-6 sm:px-30 text-xs text-slate-500 font-bold">
+            <div className="flex items-center gap-1 uppercase pt-20 sm:pt-8.75 px-6 sm:px-30 text-xs text-slate-500 font-bold">
                 <a href="/" className="hover:text-verde cursor-pointer text-slate-400 duration-200">Início</a>
                 <LuChevronRight className="text-slate-400" />
                 <a href={`/categoria/${produto?.categoria.nome}`} className="hover:text-verde cursor-pointer text-slate-400 duration-200">{produto?.categoria.nome}</a>
@@ -105,9 +105,9 @@ const ProdutoDetalhe = ({ params }) => {
             </div>
 
             <div className="flex flex-col lg:flex-row justify-between items-start px-6 sm:px-30 py-5 gap-6 lg:gap-15">
-                <div className="w-full max-w-[600px]">
+                <div className="w-full max-w-150">
                     <img
-                        className="rounded-xl object-cover w-full max-w-[600px] h-auto sm:h-[600px]"
+                        className="rounded-xl object-cover w-full max-w-150 h-auto sm:h-150"
                         src={imagemSelecionada}
                         alt="foto do produto"
                     />
@@ -124,19 +124,18 @@ const ProdutoDetalhe = ({ params }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col items-start gap-6 w-full sm:w-[550px]">
+                <div className="flex flex-col items-start gap-6 w-full sm:w-137.5">
                     <div>
-                        <div className="flex items-start gap-5 ">
-                            <h2 className="text-xl font-semibold flex-1">{produto?.nome}</h2>
+                        <div className="flex items-start gap-4">
+                            <h2 className="text-2xl font-semibold flex-1">{produto?.nome}</h2>
                             <div className="flex items-center gap-4 *:text-2xl *:hover:text-verde *:duration-200 *:cursor-pointer">
                                 <BiShare className="rotate-y-180" />
                                 <BiHeart onClick={favoritar} className={(favoritos || []).find(favorito => favorito.id_produto == produto?.id) ? "text-verde":""} />
                             </div>
                         </div>
-                        <p className="text-gray-400 text-sm mb-2">Referência do produto</p>
                         <div className="items-center gap-2 mb-4">
-                            <p className="text-black mt-4 text-4xl font-semibold">R$ {produto?.valor.toFixed(2)}</p>
-                            <p className="text-sm text-gray-500">Em até 2x de R$ {(produto?.valor / 2).toFixed(2)} sem juros</p>
+                            <p className="text-black mt-4 text-3xl font-bold">R$ {produto?.valor.toFixed(2)}</p>
+                            <p className="text-sm text-gray-500">Em até <span className="font-bold text-black">3x</span> de <span className="font-bold text-black">R$ {(produto?.valor / 3).toFixed(2)}</span>  sem juros</p>
                         </div>
                         <Collapse expandIconPosition="end" className="[&_.ant-collapse-expand-icon]:text-slate-400" ghost items={
                             [
@@ -172,7 +171,7 @@ const ProdutoDetalhe = ({ params }) => {
                         <h3 className="font-semibold">Tamanhos:</h3>
                         <div className="flex gap-3 mt-2">
                             {
-                                ["PP", "P", "M", "G", "GG", "XGG"].map((tamanho) => {
+                                ["P", "M", "G", "GG"].map((tamanho) => {
                                     if (produto && produto.tamanho.split(",").includes(tamanho)) {
                                         return (<span key={tamanho} className={`border text-sm w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-verde hover:text-white duration-200 ${manequim == tamanho && "bg-verde text-white"}`} onClick={() => setManequim(tamanho)}>{tamanho}</span>)
                                     } else {

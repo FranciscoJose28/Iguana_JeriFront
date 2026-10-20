@@ -18,8 +18,9 @@ import { useBuscarPedidos, useEditarPedidos } from "@/hookspedidoHooks";
 
 const AdminPedidos = () => {
   const [status, setStatus] = useState(false);
-  const [cliente, setCliente] = useState(false);
-  const { data: pedidos, isFetching, refetch } = useBuscarPedidos(null, status, cliente);
+  const [cliente, setCliente] = useState("");
+  const [clienteBusca, setClienteBusca] = useState("");
+  const { data: pedidos, isFetching } = useBuscarPedidos(null, status, clienteBusca);
   const [drawerEditar, setDrawerEditar] = useState(false);
   const { mutateAsync: editarPedido } = useEditarPedidos();
   const { api } = useContext(AntContext);
@@ -48,8 +49,8 @@ const AdminPedidos = () => {
     return date.toLocaleDateString("pt-BR");
   };
 
-  const ProdutosExpandidos = ({ produtos_pedido }) => {
-    if (!produtos_pedido || produtos_pedido.length === 0) {
+  const ProdutosExpandidos = ({ pedido }) => {
+    if (!pedido.produtos_pedido || pedido.produtos_pedido.length === 0) {
       return <p>Nenhum produto neste pedido</p>;
     }
 
@@ -61,7 +62,7 @@ const AdminPedidos = () => {
               <span className="text-xs font-semibold uppercase text-gray-500">
                 Cliente:
               </span>
-              <span className="text-base font-semibold">Francisco José</span>
+              <span className="text-base font-semibold">{pedido.cliente.nome}</span>
             </div>
 
             <div className="flex items-center gap-1">
@@ -69,7 +70,7 @@ const AdminPedidos = () => {
                 Email:
               </span>
               <span className="text-base font-semibold ">
-                francisco@gmail.com
+                {pedido.cliente.email}
               </span>
             </div>
 
@@ -77,7 +78,7 @@ const AdminPedidos = () => {
               <span className="text-xs font-semibold uppercase text-gray-500">
                 Telefone:
               </span>
-              <span className="text-base font-semibold">(85) 99775-0528</span>
+              <span className="text-base font-semibold">{pedido.cliente.telefone}</span>
             </div>
           </div>
 
@@ -87,15 +88,15 @@ const AdminPedidos = () => {
                 Endereço:
               </span>
               <span className="text-base font-semibold text-left">
-                Rua Mosenhor Otavio de Castro 184
+                {pedido.cliente.enderecos[0].logradouro}, {pedido.cliente.enderecos[0].numero}, {pedido.cliente.enderecos[0].complemento}
                 <br />
-                Bairro de Fátima, Fortaleza, Ceará
+                {pedido.cliente.enderecos[0].bairro}, {pedido.cliente.enderecos[0].cidade}, {pedido.cliente.enderecos[0].estado}
               </span>
             </div>
           </div>
         </div>
 
-        <Table dataSource={produtos_pedido} rowKey={(pedido) => pedido.id}>
+        <Table dataSource={pedido.produtos_pedido} rowKey={(pedido) => pedido.id}>
           <Table.Column
             title="Imagem"
             key="imagem"
@@ -164,8 +165,10 @@ const AdminPedidos = () => {
   }
 
   useEffect(() => {
-    refetch();
-  }, [status, cliente]);
+    const timeout = setTimeout(() => setClienteBusca(cliente), 300);
+
+    return () => clearTimeout(timeout);
+  }, [cliente]);
 
   return (
     <>
@@ -204,7 +207,7 @@ const AdminPedidos = () => {
             Concluído
           </div>
         </div>
-        <input type="text" className="border h-10 pl-3 rounded" placeholder="Nome ou Email" onChange={setCliente}/>
+        <input type="text" className="border h-10 pl-3 rounded" placeholder="Nome ou Email" value={cliente} onChange={(e) => setCliente(e.target.value)}/>
       </div>
 
       <Table
@@ -213,7 +216,7 @@ const AdminPedidos = () => {
         loading={isFetching}
         expandable={{
           expandedRowRender: (record) => (
-            <ProdutosExpandidos produtos_pedido={record.produtos_pedido} />
+            <ProdutosExpandidos pedido={record} />
           ),
         }}
       >

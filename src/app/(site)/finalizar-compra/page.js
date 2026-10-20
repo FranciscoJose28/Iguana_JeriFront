@@ -334,7 +334,7 @@ const FinalizarCompra = () => {
 
     const onError = async (error) => {
         // callback chamado para todos os casos de erro do Brick
-        console.log(error);
+        console.log("error do mercado pago", error);
     };
     const onReady = async () => {
         /*
@@ -610,7 +610,7 @@ const FinalizarCompra = () => {
                         <>
                             <Payment
                                 initialization={{
-                                    amount: total,
+                                    amount: total.toFixed(2),
                                     preferenceId,
                                 }}
                                 customization={{

@@ -133,7 +133,7 @@ const Header = () => {
                 Biquínis
               </a>
               <div className="fixed left-0 top-[86px] bg-white w-full px-30 py-5 flex flex-col gap-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 duration-200">
-                <a href="">Sutiãs</a>
+                <a href="/produtos?cat=Biquini">Sutiãs</a>
                 <a href="">Calcinhas</a>
                 <a href="">Conjuntos</a>
               </div>
@@ -148,11 +148,11 @@ const Header = () => {
                 <a href="">Chamise</a>
                 <a href="">Macacão</a>
                 <a href="">Blusa UV</a>
-                <a href="">Saídas</a>
+                <a href="/produtos?cat=Saída de banho">Saídas</a>
               </div>
             </li>
             <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
-              <a href="/" className="leading-[86.8px] block">
+              <a href="/produtos?cat=Maiô" className="leading-[86.8px] block">
                 Maiôs
               </a>
             </li>

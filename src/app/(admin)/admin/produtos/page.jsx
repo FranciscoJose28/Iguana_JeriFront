@@ -156,7 +156,7 @@ const AdminProduto = () => {
           return produto.categoria.nome
         }} />
         <Table.Column
-          className="w-[100px]"
+          className="w-25"
           title="ações"
           render={(_, produto) => (
             <div className="flex gap-3">

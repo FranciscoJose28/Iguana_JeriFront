@@ -5,13 +5,29 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 
 export const useBuscarPedidos = (id = null, status = null, cliente = null) => {
     return useQuery({
-        queryKey: ["pedidos", id],
+        queryKey: ["pedidos", id, status, cliente],
+
         queryFn: async () => {
-            const resposta = await API.get(id ? `/pedidos?id_cliente=${id}&status=${status}` : `/pedidos?status=${status.toString()}&cliente=${cliente}`)
-            return resposta.data
+            const params = new URLSearchParams();
+
+            if (id) {
+                params.append("id_cliente", id);
+            }
+
+            if (status) {
+                params.append("status", Array.isArray(status) ? status.join(",") : status);
+            }
+
+            if (cliente) {
+                params.append("cliente", cliente);
+            }
+
+            const resposta = await API.get(`/pedidos?${params.toString()}`);
+
+            return resposta.data;
         },
-    })
-}
+    });
+};
 
 export const useEditarPedidos = () => {
     return useMutation({
