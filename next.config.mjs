@@ -9,6 +9,16 @@ const nextConfig = {
             },
             {
                 protocol: 'http',
+                hostname: 'iguana-jeriapi.onrender.com',
+                pathname: '/uploads/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'iguana-jeriapi.onrender.com',
+                pathname: '/uploads/**',
+            },
+            {
+                protocol: 'http',
                 hostname: 'localhost',
                 port: '8000',
                 pathname: '/**',
