@@ -76,8 +76,8 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
 
     return (
         <div className="mb-10 group">
-            <div className="mb-3">
-                <div className="relative w-full h-[320px]">
+            <div className="mb-6">
+                <div className="relative w-full h-40 lg:h-80">
                     <a href={`/produto/${id}`}>
                         <Image
                             src={produto_imagem[0].imagem}
@@ -85,17 +85,19 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
                             fill
                             priority={false}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
-                            className="rounded -z-10w object-cover"
+                            className="rounded object-cover"
                         />
                     </a>
                 </div>
-                <h3 className="h-12 text-center font-semibold uppercase mt-3 line-clamp-2 text-slate-700">{nome}</h3>
+                <h3 className="h-12 text-center uppercase mt-3 line-clamp-2 text-slate-800">{nome}</h3>
                 <h3 className="text-center text-2xl mt-3 text-black font-bold">R${valor.toFixed(2)}</h3>
                 <p className="text-sm text-gray-500 text-center">Em até <span className="font-bold text-black">3x</span> de <span className="font-bold text-black">R$ {(produto?.valor / 3).toFixed(2)}</span>  sem juros</p>
             </div>
 
-            <div className="flex gap-1 items-center opacity-0 group-hover:opacity-100 duration-200">
-                <div className=" bg-black/10 w-40 rounded-3xl">
+            <div className="h-px bg-slate-300 group-hover:opacity-0 hidden lg:block"></div>
+
+            <div className="flex gap-1 items-center lg:opacity-0 group-hover:opacity-100 duration-200">
+                <div className=" bg-black/10 w-40 rounded-3xl hidden lg:block">
                     <select className="h-10 w-full px-2 cursor-pointer" value={manequim} onChange={escolherTamanho}>
                         <option value="" className="text-center" disabled>Tamanho</option>
                         {tamanho?.split(",").map((t) => t.trim()).filter(Boolean).map((t) => (
@@ -114,7 +116,7 @@ const Produto = ({ id, nome, descricao, tamanho, peso, cor, valor, estoque, id_c
 
             </div>
 
-            <div className="h-px bg-slate-300 group-hover:opacity-0"></div>
+            
 
         </div>
 

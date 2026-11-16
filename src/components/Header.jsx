@@ -20,7 +20,8 @@ import { usePesquisarProduto } from "@/hooks/produtoHooks";
 import { useRouter } from "next/navigation";
 import { useLogin } from "@/hooks/clientesHooks";
 import { AntContext } from "@/contexts/AntContext";
-import { Tooltip } from "antd";
+import { Drawer, Tooltip } from "antd";
+import { LuAArrowDown, LuArrowDown, LuChevronDown, LuMenu } from "react-icons/lu";
 
 const Header = () => {
   const {
@@ -42,6 +43,7 @@ const Header = () => {
   const { urlProduto } = useContext(CarrinhoContext);
   const loginRef = useRef(null);
   const [mounted, setMounted] = useState(false);
+  const [ menu, setMenu ] = useState(false);
 
   function mostrarCarrinho() {
     setMostrarGaveta(true);
@@ -117,12 +119,13 @@ const Header = () => {
 
   return (
     <>
-      <header className="items-center z-10 w-full bg-white border-b border-black/15 flex justify-between px-30 fixed top-0 left-0">
+      <header className="items-center z-10 w-full bg-white border-b border-black/15 flex justify-between py-4 px-4 lg:px-30 fixed top-0 left-0">
         <nav className="flex items-center gap-10">
-        <div className="">
-          <Image className="h-[50px]" src={LogoMaior} alt="Iguana Jeri" />
-        </div>
-          <ul className="flex gap-6 *:font-semibold *:text-slate-600">
+          <div className="flex items-center gap-3">
+            <LuMenu size={22} onClick={() => setMenu(true)}/>
+            <Image className="h-[50px]" src={LogoMaior} alt="Iguana Jeri" />
+          </div>
+          <ul className="gap-6 *:font-semibold *:text-slate-600 hidden lg:flex">
             <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
               <a href="/" className="leading-[86.8px] block">
                 Início
@@ -163,7 +166,7 @@ const Header = () => {
           <div className="flex items-center relative">
             <input
               value={pesquisa}
-              className="h-[30px] border-b focus:outline-0 focus:border-verde duration-200"
+              className="h-[30px] border-b focus:outline-0 focus:border-verde duration-200 hidden lg:block"
               placeholder="Pesquise aqui..."
               type="text"
               onChange={(e) => {
@@ -195,7 +198,7 @@ const Header = () => {
             )}
           </div>
 
-          <div className="relative" ref={loginRef}>
+          <div className="relative hidden lg:block" ref={loginRef}>
             <Tooltip title="Meu perfil">
               {usuario ? (
                 <div
@@ -223,17 +226,17 @@ const Header = () => {
                   <ul className="mt-5 bg-white rounded *:cursor-pointer">
                     {usuario.nivel_id == 1 && (
                       <li>
-                      <a
-                        href="/admin"
-                        className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
-                      >
-                        {" "}
-                        <div className="flex items-center gap-3">
-                          <BiSolidUserCircle /> Painel
-                        </div>{" "}
-                        <BiChevronRight />
-                      </a>
-                    </li>
+                        <a
+                          href="/admin"
+                          className="flex items-center text-lg justify-between hover:text-verde duration-200 p-4 hover:bg-slate-100"
+                        >
+                          {" "}
+                          <div className="flex items-center gap-3">
+                            <BiSolidUserCircle /> Painel
+                          </div>{" "}
+                          <BiChevronRight />
+                        </a>
+                      </li>
                     )}
                     <li>
                       <a
@@ -384,7 +387,7 @@ const Header = () => {
           </div>
 
           {usuario ? (
-            <a href="/meu-perfil/favoritos">
+            <a href="/meu-perfil/favoritos" className="hidden lg:block">
               <Tooltip title="Wishlist">
                 <BiHeart
                   size={24}
@@ -408,6 +411,45 @@ const Header = () => {
       >
         <Carrinho />
       </div>
+
+      <Drawer open={menu} onClose={() => setMenu(false)} placement="left">
+        <ul className="*:font-semibold *:text-slate-600 *:border-b *:border-slate-200">
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+              <a href="/" className="leading-10 block">
+                Início
+              </a>
+            </li>
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+              <a href="/" className="leading-10 block">
+                Biquínis
+                <LuChevronDown />
+              </a>
+              <div className="fixed left-0 top-[86px] bg-white w-full px-30 py-5 flex flex-col gap-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 duration-200">
+                <a href="/produtos?cat=Biquini">Sutiãs</a>
+                <a href="">Calcinhas</a>
+                <a href="">Conjuntos</a>
+              </div>
+            </li>
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+              <a href="/" className="leading-10 block">
+                Roupas
+              </a>
+              <div className="fixed left-0 top-[86px] bg-white w-full px-30 py-5 flex flex-col gap-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 duration-200">
+                <a href="">Shorts</a>
+                <a href="">Calças</a>
+                <a href="">Chamise</a>
+                <a href="">Macacão</a>
+                <a href="">Blusa UV</a>
+                <a href="/produtos?cat=Saída de banho">Saídas</a>
+              </div>
+            </li>
+            <li className="group relative after:w-full after:h-1 after:bg-transparent hover:after:bg-verde after:duration-200 after:bottom-0 after:left-0 after:absolute after:rounded-t-md">
+              <a href="/produtos?cat=Maiô" className="leading-10 block">
+                Maiôs
+              </a>
+            </li>
+          </ul>
+      </Drawer>
     </>
   );
 };

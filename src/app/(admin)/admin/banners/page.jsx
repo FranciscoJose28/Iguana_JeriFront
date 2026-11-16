@@ -141,7 +141,7 @@ const AdminBanner = () => {
         )} />
         <Table.Column dataIndex={"link"} title={"link"} key={"link"} />
         <Table.Column
-          className="w-[100px]"
+          className="w-25"
           title="ações"
           render={(_, banner) => (
             <div className="flex gap-3">

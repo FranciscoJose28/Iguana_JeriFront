@@ -1,7 +1,23 @@
 /** @type {import('next').NextConfig} */
+const imageStoragePattern = process.env.NEXT_IMAGE_REMOTE_BASE_URL
+    ? (() => {
+        const imageStorageUrl = new URL(process.env.NEXT_IMAGE_REMOTE_BASE_URL);
+        if (!['http:', 'https:'].includes(imageStorageUrl.protocol) || imageStorageUrl.search || imageStorageUrl.hash) {
+            throw new Error('NEXT_IMAGE_REMOTE_BASE_URL must be an HTTP(S) URL without a query or fragment.');
+        }
+        return {
+            protocol: imageStorageUrl.protocol.slice(0, -1),
+            hostname: imageStorageUrl.hostname,
+            ...(imageStorageUrl.port ? { port: imageStorageUrl.port } : {}),
+            pathname: `${imageStorageUrl.pathname.replace(/\/+$/, '')}/**`,
+        };
+    })()
+    : null;
+
 const nextConfig = {
     images: {
         remotePatterns: [
+            ...(imageStoragePattern ? [imageStoragePattern] : []),
             {
                 protocol: 'https',
                 hostname: 'ciamaritima.vtexassets.com',

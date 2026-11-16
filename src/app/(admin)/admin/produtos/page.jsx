@@ -18,6 +18,7 @@ import {
   Popconfirm,
   Select,
   Table,
+  Upload,
 } from "antd";
 import {
   BiImageAdd,
@@ -106,7 +107,11 @@ const AdminProduto = () => {
   }
 
   function adicionarImagem(dados) {
-    criarImagem(dados, {
+    const formData = new FormData();
+    formData.append("id_produto", produtoSelecionado.id);
+    formData.append("imagem", dados.imagem[0].originFileObj);
+
+    criarImagem(formData, {
       onSuccess: (resposta) => {
         api[resposta.tipo]({
           description: resposta.mensagem,
@@ -163,7 +168,6 @@ const AdminProduto = () => {
               <Button
                 icon={<BiImageAdd />}
                 onClick={() => {
-                  formImagem.setFieldValue("id_produto", produto.id);
                   setDrawerImagem(true);
                   setProdutoSelecionado(produto);
                 }}
@@ -573,23 +577,16 @@ const AdminProduto = () => {
           encType="multipart/form-data"
           onFinish={adicionarImagem}
         >
-          <Form.Item hidden name={"id_produto"}>
-            <Input />
-          </Form.Item>
-          
           <Form.Item
             label={"Imagem"}
             name={"imagem"}
             rules={[{ required: true, message: "Campo obrigatório" }]}
             valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e?.target?.files?.[0];
-            }}
+            getValueFromEvent={(e) => e?.fileList ?? []}
           >
-            <Input type="file" />
+            <Upload beforeUpload={() => false} accept="image/*" maxCount={1}>
+              <Button icon={<BiUpload />}>Selecionar imagem</Button>
+            </Upload>
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
