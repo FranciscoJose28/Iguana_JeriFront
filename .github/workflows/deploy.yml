@@ -19,16 +19,16 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_API_URL: https://api.iguanajeri.com.br
+          VITE_API_URL: /api
 
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Enviar build para a VPS
         run: |
-          rsync -avz --delete dist/ \
+          rsync -avz --delete -e "ssh -p ${{ secrets.VPS_PORT }}" dist/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/frontend/
