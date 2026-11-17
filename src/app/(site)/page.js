@@ -20,6 +20,6 @@ const Inicio = () => {
             <ToastContainer/>
         </>
     );
-}
+};
 
 export default Inicio;
