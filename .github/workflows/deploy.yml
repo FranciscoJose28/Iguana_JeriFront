@@ -19,7 +19,16 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_API_URL: /api
+          NEXT_PUBLIC_API_URL: /api
+
+      - name: Montar pacote
+        run: |
+          mkdir -p deploy_pkg
+          cp -r .next/standalone/. deploy_pkg/
+          mkdir -p deploy_pkg/.next
+          cp -r .next/static deploy_pkg/.next/static
+          [ -d public ] && cp -r public deploy_pkg/public || true
+          cp ecosystem.config.js deploy_pkg/
 
       - name: Configurar SSH
         run: |
@@ -28,7 +37,15 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Enviar build para a VPS
+      - name: Enviar para a VPS
         run: |
-          rsync -avz --delete -e "ssh -p ${{ secrets.VPS_PORT }}" out/ \
+          rsync -avz --delete -e "ssh -p ${{ secrets.VPS_PORT }}" deploy_pkg/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/frontend/
+
+      - name: Reiniciar aplicação
+        run: |
+          ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd /var/www/frontend
+            pm2 startOrReload ecosystem.config.js
+            pm2 save
+          EOF

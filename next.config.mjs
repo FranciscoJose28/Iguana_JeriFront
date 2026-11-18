@@ -15,7 +15,7 @@ const imageStoragePattern = process.env.NEXT_IMAGE_REMOTE_BASE_URL
     : null;
 
 const nextConfig = {
-    output: "export",
+    output: "standalone",
     images: {
         remotePatterns: [
             ...(imageStoragePattern ? [imageStoragePattern] : []),
