@@ -21,32 +21,20 @@ const nextConfig = {
             ...(imageStoragePattern ? [imageStoragePattern] : []),
             {
                 protocol: 'https',
-                hostname: 'ciamaritima.vtexassets.com',
-                pathname: '/**',
+                hostname: 'api.iguanajeri.com.br',
+                pathname: '/uploads/**',
             },
             {
                 protocol: 'http',
-                hostname: 'iguana-jeriapi.onrender.com',
+                hostname: 'api.iguanajeri.com.br',
                 pathname: '/uploads/**',
             },
             {
                 protocol: 'https',
-                hostname: 'iguana-jeriapi.onrender.com',
-                pathname: '/uploads/**',
-            },
-            {
-                protocol: 'http',
-                hostname: 'localhost',
-                port: '8000',
+                hostname: 'ciamaritima.vtexassets.com',
                 pathname: '/**',
             },
-            {
-                // also allow 127.0.0.1 in case some services use the loopback IP
-                protocol: 'http',
-                hostname: '127.0.0.1',
-                port: '8000',
-                pathname: '/**',
-            },
+            // ... mantenha o resto (onrender, localhost, 127.0.0.1)
         ],
     },
 };
